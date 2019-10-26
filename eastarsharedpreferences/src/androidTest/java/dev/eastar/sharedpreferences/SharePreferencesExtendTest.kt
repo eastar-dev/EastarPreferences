@@ -3,15 +3,14 @@ package dev.eastar.sharedpreferences
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.hamcrest.MatcherAssert.assertThat
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
-@RunWith(AndroidJUnit4::class)
 @DisplayName("SharedPreferences 테스트")
 class SharePreferencesExtendTest {
 
@@ -64,24 +63,24 @@ class SharePreferencesExtendTest {
         assertTrue(Pref.TEST_SET.get(setOf("enum", "define", "shared", "preferences")) == setOf("enum", "define", "shared", "preferences"))
     }
 
+    @Suppress("UNUSED_VARIABLE")
     @DisplayName("값 넣은 후 다른 타입으로 불러오기 오류 테스트")
-    @Test(expected = ClassCastException::class)
-    @Throws(Exception::class)
+    @Test
     fun testClassCastException() {
-        //assertThrows(ClassCastException::class.java) {
-        Pref.TEST_THROW_BOOLEAN2NUMBER.put(true)
-        val result: Int = Pref.TEST_THROW_BOOLEAN2NUMBER.get()!!
-        //}
+        assertThrows(ClassCastException::class.java) {
+            Pref.TEST_THROW_BOOLEAN2NUMBER.put(true)
+            val result: Int = Pref.TEST_THROW_BOOLEAN2NUMBER.get()!!
+        }
 
-        //assertThrows(ClassCastException::class.java) {
-        //    Pref.TEST_THROW_INT2LONG.put(1)
-        //    val result: Long = Pref.TEST_THROW_INT2LONG.get()!!
-        //}
+        assertThrows(ClassCastException::class.java) {
+            Pref.TEST_THROW_INT2LONG.put(1)
+            val result: Long = Pref.TEST_THROW_INT2LONG.get()!!
+        }
 
-        //assertThrows(ClassCastException::class.java) {
-        //    Pref.TEST_THROW_INT2STRING.put(1)
-        //    val result: String = Pref.TEST_THROW_INT2STRING.get()!!
-        //}
+        assertThrows(ClassCastException::class.java) {
+            Pref.TEST_THROW_INT2STRING.put(1)
+            val result: String = Pref.TEST_THROW_INT2STRING.get()!!
+        }
     }
 
     @DisplayName("getDefaultSharedPreferences로  만들어진 SharedPreferences")
@@ -109,11 +108,8 @@ class SharePreferencesExtendTest {
     }
 }
 
-annotation class DisplayName(val value: String)
-
 private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-@DisplayName("class name 으로 SharedPreferences 생성 태스트")
 enum class Pref : IPref by PrefDecelerator(InstrumentationRegistry.getInstrumentation().targetContext) {
     TEST_EMPTY_BOOLEAN,
     TEST_EMPTY_INT,
@@ -134,12 +130,10 @@ enum class Pref : IPref by PrefDecelerator(InstrumentationRegistry.getInstrument
     TEST_THROW_INT2STRING,
 }
 
-@DisplayName("class name 으로 SharedPreferences 생성 태스트")
 enum class PrefClassName : IPref by PrefDecelerator(InstrumentationRegistry.getInstrumentation().targetContext) {
     TEST
 }
 
-@DisplayName("class name 으로 SharedPreferences 생성 태스트")
 enum class PrefSpecial : IPref by PrefDecelerator(context.getSharedPreferences("Your Preferences special name", Context.MODE_PRIVATE)) {
     TEST
 }

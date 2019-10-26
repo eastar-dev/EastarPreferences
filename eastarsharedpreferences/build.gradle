@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'de.mannodermaus.android-junit5'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -12,7 +13,17 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles 'consumer-rules.pro'
+        testInstrumentationRunnerArgument "runnerBuilder", "de.mannodermaus.junit5.AndroidJUnit5Builder"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+android {
+    packagingOptions {
+        exclude 'META-INF/NOTICE*'
+        exclude 'META-INF/LICENSE*'
     }
 }
 
@@ -21,6 +32,15 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation "androidx.preference:preference-ktx:1.1.0"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    androidTestImplementation "androidx.test:runner:1.2.0"
+    androidTestImplementation "de.mannodermaus.junit5:android-test-core:1.0.0"
+    androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    androidTestRuntimeOnly "de.mannodermaus.junit5:android-test-runner:1.0.0"
+    androidTestRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.5.2"
+    androidTestRuntimeOnly "org.junit.platform:junit-platform-runner:1.4.2"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.5.2'
 }
