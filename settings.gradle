@@ -1,0 +1,2 @@
+include ':eastarsharedpreferences'
+rootProject.name='EastarSharedPreferencesLoveInEnum'

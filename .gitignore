@@ -1,0 +1,12 @@
+.DS_Store
+.gradle
+.svn
+build/
+/captures
+.externalNativeBuild
+*.iml
+/.idea
+local.properties
+*.pepk
+*.aab
+*.apks
