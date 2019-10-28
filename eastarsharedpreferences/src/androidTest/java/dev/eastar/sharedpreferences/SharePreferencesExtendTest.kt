@@ -110,7 +110,7 @@ class SharePreferencesExtendTest {
 
 private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-enum class Pref : IPref by PrefDecelerator(InstrumentationRegistry.getInstrumentation().targetContext) {
+enum class Pref : IPref by PrefDelegate(InstrumentationRegistry.getInstrumentation().targetContext) {
     TEST_EMPTY_BOOLEAN,
     TEST_EMPTY_INT,
     TEST_EMPTY_FLOAT,
@@ -130,15 +130,15 @@ enum class Pref : IPref by PrefDecelerator(InstrumentationRegistry.getInstrument
     TEST_THROW_INT2STRING,
 }
 
-enum class PrefClassName : IPref by PrefDecelerator(InstrumentationRegistry.getInstrumentation().targetContext) {
+enum class PrefClassName : IPref by PrefDelegate(InstrumentationRegistry.getInstrumentation().targetContext) {
     TEST
 }
 
-enum class PrefSpecial : IPref by PrefDecelerator(context.getSharedPreferences("Your Preferences special name", Context.MODE_PRIVATE)) {
+enum class PrefSpecial : IPref by PrefDelegate(context.getSharedPreferences("Your Preferences special name", Context.MODE_PRIVATE)) {
     TEST
 }
 
-enum class PrefDefault : IPref by PrefDecelerator(PreferenceManager.getDefaultSharedPreferences(context)) {
+enum class PrefDefault : IPref by PrefDelegate(PreferenceManager.getDefaultSharedPreferences(context)) {
     TEST
 }
 

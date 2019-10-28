@@ -67,7 +67,7 @@ fun IPref.contains(): Boolean = preferences.contains((this as Enum<*>).name)
 fun IPref.remove() = preferences.edit { remove((this as Enum<*>).name) }
 fun IPref.clear() = preferences.edit { clear() }
 fun IPref.getAll(): MutableMap<String, *> = preferences.all
-//TODO : Check it 
+//TODO : Check it
 fun IPref.registerOnSharedPreferenceChangeListener(callback: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.registerOnSharedPreferenceChangeListener(callback)
 fun IPref.unregisterOnSharedPreferenceChangeListener(callback: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.unregisterOnSharedPreferenceChangeListener(callback)
 fun IPref.registerOnSharedPreferenceChangeListener(callback: (SharedPreferences, String) -> Unit) = preferences.registerOnSharedPreferenceChangeListener(callback)
@@ -77,7 +77,8 @@ interface IPref {
     val preferences: SharedPreferences
 }
 
-class PrefDecelerator : IPref {
+class PrefDelegate : IPref {
+
     override val preferences: SharedPreferences
 
     constructor(preferences: SharedPreferences) {
