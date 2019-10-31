@@ -21,7 +21,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 
-inline fun <reified T> IPref.get(defValue: T?): T? {
+@Suppress("UNCHECKED_CAST")
+fun <T> IPref.get(defValue: T): T {
     val key = (this as? Enum<*>)?.name
     //Log.w("get", key, "defValue:$defValue", T::class)
     return if (preferences.all.containsKey(key))
@@ -49,10 +50,10 @@ inline fun <reified T> IPref.get(): T? {
 }
 
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T> IPref.put(value: T?) {
+inline fun <T : Any> IPref.put(value: T) {
     val key = (this as? Enum<*>)?.name
     //Log.e("put", key, value, T::class)
-    when (T::class) {
+    when (value.javaClass) {
         Boolean::class -> preferences.edit { putBoolean(key, value as Boolean) }
         Int::class -> preferences.edit { putInt(key, value as Int) }
         Float::class -> preferences.edit { putFloat(key, value as Float) }
@@ -69,6 +70,7 @@ fun IPref.clear() = preferences.edit { clear() }
 fun IPref.getAll(): MutableMap<String, *> = preferences.all
 //TODO : Check it
 fun IPref.registerOnSharedPreferenceChangeListener(callback: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.registerOnSharedPreferenceChangeListener(callback)
+
 fun IPref.unregisterOnSharedPreferenceChangeListener(callback: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.unregisterOnSharedPreferenceChangeListener(callback)
 fun IPref.registerOnSharedPreferenceChangeListener(callback: (SharedPreferences, String) -> Unit) = preferences.registerOnSharedPreferenceChangeListener(callback)
 fun IPref.unregisterOnSharedPreferenceChangeListener(callback: (SharedPreferences, String) -> Unit) = preferences.unregisterOnSharedPreferenceChangeListener(callback)
