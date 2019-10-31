@@ -35,7 +35,7 @@ val SharePreferencesExtend.preferences
             }.first()
 
 @Suppress("UNCHECKED_CAST")
-fun <T> SharePreferencesExtend.get(defValue: T): T {
+operator fun <T> SharePreferencesExtend.get(defValue: T): T {
     val key = (this as Enum<*>).name
     return if (preferences.all.containsKey(key))
         preferences.all[key] as T
