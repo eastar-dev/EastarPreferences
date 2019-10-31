@@ -36,17 +36,17 @@ val SharePreferencesExtend.preferences
 
 @Suppress("UNCHECKED_CAST")
 fun <T> SharePreferencesExtend.get(defValue: T): T {
-    //Log.w("get", key, "defValue:$defValue", T::class)
-    return if (preferences.all.containsKey((this as Enum<*>).name))
-        preferences.all[this.toString()] as T
+    val key = (this as Enum<*>).name
+    return if (preferences.all.containsKey(key))
+        preferences.all[key] as T
     else
         defValue
 }
 
 inline fun <reified T> SharePreferencesExtend.get(): T? {
-    //Log.w("get", key, "defValue:empty", T::class)
-    if (preferences.all.containsKey((this as Enum<*>).name))
-        return preferences.all[toString()] as T
+    val key = (this as Enum<*>).name
+    if (preferences.all.containsKey(key))
+        return preferences.all[key] as T
 
     return when (T::class) {
         Boolean::class -> false as T
