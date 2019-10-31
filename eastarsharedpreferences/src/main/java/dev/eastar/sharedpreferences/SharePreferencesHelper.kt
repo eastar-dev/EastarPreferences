@@ -21,7 +21,8 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import java.lang.reflect.Modifier
 
-object PX {
+object PP {
+    /** Get field below condition public, static and SharedPreferences by reflection other wise throw*/
     fun getPreferences(key: Enum<*>): SharedPreferences = key.javaClass.fields
             .filter {
                 it.type == SharedPreferences::class.java
@@ -30,11 +31,6 @@ object PX {
             }.map {
                 it.get(null) as SharedPreferences
             }.first()
-
-//    @JvmStatic
-//    operator fun <T : Any?> equals(value: T?): Boolean {
-//        return false
-//    }
 
     @Suppress("UNCHECKED_CAST")
     operator fun <T> get(key: Enum<*>, defValue: T): T {
@@ -51,6 +47,7 @@ object PX {
         if (preferences.all.containsKey(key.name))
             return preferences.all[key.name] as T
 
+        android.util.Log.e("tag",T::class.java.name )
         return when (T::class) {
             Boolean::class -> false as T
             Int::class -> 0 as T
@@ -62,6 +59,7 @@ object PX {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     operator fun <T : Any> set(key: Enum<*>, value: T) {
         val preferences = getPreferences(key)
         val key = key.name
