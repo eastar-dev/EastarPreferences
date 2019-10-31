@@ -42,13 +42,16 @@ class SharePreferencesExtendTest {
     @Test
     fun testPutAndGetValue() {
         Pref.TEST_BOOLEAN.put(true)
-        assertTrue(Pref.TEST_BOOLEAN.get(true) == true)
+        assertTrue(Pref.TEST_BOOLEAN.get<Boolean>() == true)
+        assertTrue(Pref.TEST_BOOLEAN.get(false) == true)
 
         Pref.TEST_INT.put(123)
-        assertTrue(Pref.TEST_INT.get(123) == 123)
+        assertTrue(Pref.TEST_INT.get<Int>() == 123)
+        assertTrue(Pref.TEST_INT.get(111) == 123)
 
         Pref.TEST_FLOAT.put(1.23F)
-        assertTrue(Pref.TEST_FLOAT.get(1.23F) == 1.23F)
+        assertTrue(Pref.TEST_FLOAT.get<Float>() == 1.23F)
+        assertTrue(Pref.TEST_FLOAT.get(-1.1F) == 1.23F)
 
         Pref.TEST_LONG.put(Long.MAX_VALUE)
         assertTrue(Pref.TEST_LONG.get(Long.MAX_VALUE) == Long.MAX_VALUE)
@@ -56,13 +59,14 @@ class SharePreferencesExtendTest {
         Pref.TEST_STRING.run {
             val source = "enum define shared preferences"
             put(source)
-            val result = get("not $source")
-            assertThat(result, equalTo(source))
+
+            assertThat(get<String>(), equalTo(source))
+            assertThat(get("not $source"), equalTo(source))
         }
 
-
         Pref.TEST_SET.put(setOf("enum", "define", "shared", "preferences"))
-        assertTrue(Pref.TEST_SET.get(setOf("enum", "define", "shared", "preferences")) == setOf("enum", "define", "shared", "preferences"))
+        assertTrue(Pref.TEST_SET.get<Set<String>>() == setOf("enum", "define", "shared", "preferences"))
+        assertTrue(Pref.TEST_SET.get(setOf("not", "enum", "define", "shared", "preferences")) == setOf("enum", "define", "shared", "preferences"))
     }
 
     @Suppress("UNUSED_VARIABLE")
