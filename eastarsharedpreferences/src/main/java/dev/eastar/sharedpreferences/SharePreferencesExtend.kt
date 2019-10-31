@@ -50,7 +50,7 @@ inline fun <reified T> IPref.get(): T? {
 }
 
 @Suppress("UNCHECKED_CAST")
-inline fun <T : Any> IPref.put(value: T) {
+fun <T : Any> IPref.put(value: T) {
     val key = (this as? Enum<*>)?.name
     //Log.e("put", key, value, T::class)
     when (value.javaClass) {

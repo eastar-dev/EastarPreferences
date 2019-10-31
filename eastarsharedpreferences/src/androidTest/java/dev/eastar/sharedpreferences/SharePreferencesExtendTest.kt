@@ -1,3 +1,5 @@
+@file:Suppress("SimplifyBooleanWithConstants")
+
 package dev.eastar.sharedpreferences
 
 import android.content.Context
