@@ -4,17 +4,26 @@ package dev.eastar.sharedpreferences
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 import androidx.test.platform.app.InstrumentationRegistry
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @DisplayName("SharedPreferences 테스트")
 class SharePreferencesExtendTest {
+
+    companion object {
+        @BeforeAll
+        @JvmStatic
+        fun beforeAll() {
+            val context = InstrumentationRegistry.getInstrumentation().targetContext
+            Pref.preferences = context.getSharedPreferences(Pref::class.java.name, Context.MODE_PRIVATE)
+        }
+    }
 
     @DisplayName("값이 없을때 테스트")
     @Test
@@ -88,35 +97,9 @@ class SharePreferencesExtendTest {
             val result: String = Pref.TEST_THROW_INT2STRING.get()!!
         }
     }
-
-    @DisplayName("getDefaultSharedPreferences로  만들어진 SharedPreferences")
-    @Test
-    fun testDefaultSharedPreferences() {
-        PrefDefault.TEST.get<String>()
-    }
-
-    @DisplayName("ClassName으로 만들어진 SharedPreferences")
-    @Test
-    fun testClassNameSharedPreferences() {
-        PrefClassName.TEST.get<String>()
-    }
-
-    @DisplayName("원하는 이름으로 만들어진 SharedPreferences")
-    @Test
-    fun testSpecialNameSharedPreferences() {
-        PrefSpecial.TEST.get<String>()
-    }
-
-    @DisplayName("Custom 으로 만들어진 SharedPreferences")
-    @Test
-    fun testCustomSharedPreferences() {
-        PrefCustom.TEST.get<String>()
-    }
 }
 
-private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
-enum class Pref : IPref by PrefDelegate(InstrumentationRegistry.getInstrumentation().targetContext) {
+enum class Pref : IPref {
     TEST_EMPTY_BOOLEAN,
     TEST_EMPTY_INT,
     TEST_EMPTY_FLOAT,
@@ -133,23 +116,10 @@ enum class Pref : IPref by PrefDelegate(InstrumentationRegistry.getInstrumentati
 
     TEST_THROW_BOOLEAN2NUMBER,
     TEST_THROW_INT2LONG,
-    TEST_THROW_INT2STRING,
+    TEST_THROW_INT2STRING;
+
+    companion object {
+        lateinit var preferences: SharedPreferences
+    }
 }
 
-enum class PrefClassName : IPref by PrefDelegate(InstrumentationRegistry.getInstrumentation().targetContext) {
-    TEST
-}
-
-enum class PrefSpecial : IPref by PrefDelegate(context.getSharedPreferences("Your Preferences special name", Context.MODE_PRIVATE)) {
-    TEST
-}
-
-enum class PrefDefault : IPref by PrefDelegate(PreferenceManager.getDefaultSharedPreferences(context)) {
-    TEST
-}
-
-enum class PrefCustom : IPref by object : IPref {
-    override val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-} {
-    TEST
-}

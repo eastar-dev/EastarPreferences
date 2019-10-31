@@ -17,26 +17,36 @@
 
 package dev.eastar.sharedpreferences
 
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import java.lang.reflect.Modifier
+
+interface IPref
+
+/** Get field below condition public, static and SharedPreferences by reflection other wise throw*/
+val IPref.preferences
+    get() = javaClass.fields
+            .filter {
+                it.type == SharedPreferences::class.java
+                        && it.modifiers and Modifier.STATIC == Modifier.STATIC
+                        && it.get(null) != null
+            }.map {
+                it.get(null) as SharedPreferences
+            }.first()
 
 @Suppress("UNCHECKED_CAST")
 fun <T> IPref.get(defValue: T): T {
-    val key = (this as? Enum<*>)?.name
     //Log.w("get", key, "defValue:$defValue", T::class)
-    return if (preferences.all.containsKey(key))
-        preferences.all[key] as T
+    return if (preferences.all.containsKey((this as Enum<*>).name))
+        preferences.all[this.toString()] as T
     else
         defValue
 }
 
 inline fun <reified T> IPref.get(): T? {
-    val key = (this as? Enum<*>)?.name
     //Log.w("get", key, "defValue:empty", T::class)
-
-    if (preferences.all.containsKey(key))
-        return preferences.all[key] as T
+    if (preferences.all.containsKey((this as Enum<*>).name))
+        return preferences.all[toString()] as T
 
     return when (T::class) {
         Boolean::class -> false as T
@@ -51,43 +61,16 @@ inline fun <reified T> IPref.get(): T? {
 
 @Suppress("UNCHECKED_CAST")
 fun <T : Any> IPref.put(value: T) {
-    val key = (this as? Enum<*>)?.name
     //Log.e("put", key, value, T::class)
-    when (value.javaClass) {
-        Boolean::class -> preferences.edit { putBoolean(key, value as Boolean) }
-        Int::class -> preferences.edit { putInt(key, value as Int) }
-        Float::class -> preferences.edit { putFloat(key, value as Float) }
-        Long::class -> preferences.edit { putLong(key, value as Long) }
-        String::class -> preferences.edit { putString(key, value as String) }
-        Set::class -> preferences.edit { putStringSet(key, value as Set<String>) }
-        else -> Unit
+    val key = (this as Enum<*>).name
+    when (value) {
+        is Boolean -> preferences.edit { putBoolean(key, value as Boolean) }
+        is Int -> preferences.edit { putInt(key, value as Int) }
+        is Float -> preferences.edit { putFloat(key, value as Float) }
+        is Long -> preferences.edit { putLong(key, value as Long) }
+        is String -> preferences.edit { putString(key, value as String) }
+        is Set<*> -> preferences.edit { putStringSet(key, value as Set<String>) }
+        else -> throw ClassNotFoundException("Unsupport type ${value.javaClass.name}")
     }
 }
 
-fun IPref.contains(): Boolean = preferences.contains((this as Enum<*>).name)
-fun IPref.remove() = preferences.edit { remove((this as Enum<*>).name) }
-fun IPref.clear() = preferences.edit { clear() }
-fun IPref.getAll(): MutableMap<String, *> = preferences.all
-//TODO : Check it
-fun IPref.registerOnSharedPreferenceChangeListener(callback: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.registerOnSharedPreferenceChangeListener(callback)
-
-fun IPref.unregisterOnSharedPreferenceChangeListener(callback: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.unregisterOnSharedPreferenceChangeListener(callback)
-fun IPref.registerOnSharedPreferenceChangeListener(callback: (SharedPreferences, String) -> Unit) = preferences.registerOnSharedPreferenceChangeListener(callback)
-fun IPref.unregisterOnSharedPreferenceChangeListener(callback: (SharedPreferences, String) -> Unit) = preferences.unregisterOnSharedPreferenceChangeListener(callback)
-
-interface IPref {
-    val preferences: SharedPreferences
-}
-
-class PrefDelegate : IPref {
-
-    override val preferences: SharedPreferences
-
-    constructor(preferences: SharedPreferences) {
-        this.preferences = preferences
-    }
-
-    constructor(context: Context) {
-        this.preferences = context.getSharedPreferences(javaClass.name, Context.MODE_PRIVATE)
-    }
-}
