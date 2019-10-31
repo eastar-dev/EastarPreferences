@@ -21,10 +21,10 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import java.lang.reflect.Modifier
 
-interface IPref
+interface SharePreferencesExtend
 
 /** Get field below condition public, static and SharedPreferences by reflection other wise throw*/
-val IPref.preferences
+val SharePreferencesExtend.preferences
     get() = javaClass.fields
             .filter {
                 it.type == SharedPreferences::class.java
@@ -35,7 +35,7 @@ val IPref.preferences
             }.first()
 
 @Suppress("UNCHECKED_CAST")
-fun <T> IPref.get(defValue: T): T {
+fun <T> SharePreferencesExtend.get(defValue: T): T {
     //Log.w("get", key, "defValue:$defValue", T::class)
     return if (preferences.all.containsKey((this as Enum<*>).name))
         preferences.all[this.toString()] as T
@@ -43,7 +43,7 @@ fun <T> IPref.get(defValue: T): T {
         defValue
 }
 
-inline fun <reified T> IPref.get(): T? {
+inline fun <reified T> SharePreferencesExtend.get(): T? {
     //Log.w("get", key, "defValue:empty", T::class)
     if (preferences.all.containsKey((this as Enum<*>).name))
         return preferences.all[toString()] as T
@@ -60,7 +60,7 @@ inline fun <reified T> IPref.get(): T? {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Any> IPref.put(value: T) {
+fun <T : Any> SharePreferencesExtend.put(value: T) {
     //Log.e("put", key, value, T::class)
     val key = (this as Enum<*>).name
     when (value) {

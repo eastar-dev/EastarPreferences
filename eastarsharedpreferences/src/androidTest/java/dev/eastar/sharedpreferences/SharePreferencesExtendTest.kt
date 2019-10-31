@@ -99,7 +99,7 @@ class SharePreferencesExtendTest {
     }
 }
 
-enum class Pref : IPref {
+enum class Pref : SharePreferencesExtend {
     TEST_EMPTY_BOOLEAN,
     TEST_EMPTY_INT,
     TEST_EMPTY_FLOAT,
