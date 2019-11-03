@@ -50,12 +50,10 @@ public class AnnotationGenerator : AbstractProcessor() {
                     val className = it.simpleName.toString()
                     val packageName = processingEnv.elementUtils.getPackageOf(it).toString()
 
-
+                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
                     processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, it.toString())
-
-                    println(it)
-                    println(processingEnv)
-                    println("===========================================================")
+                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, processingEnv.toString())
+                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
 
                     generateClass(packageName, className)
                 }
