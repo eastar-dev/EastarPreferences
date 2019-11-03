@@ -1,2 +1,4 @@
 include ':eastarsharedpreferences'
 rootProject.name='EastarSharedPreferencesLoveInEnum'
+include ':pref_annotation'
+include ':pref_annotation_generater'
