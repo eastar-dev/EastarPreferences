@@ -16,6 +16,7 @@
 package dev.eastar.pref.annotation.generator
 
 import com.google.auto.service.AutoService
+import dev.eastar.pref.annotation.PrefAnnotation
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
@@ -33,11 +34,11 @@ public class AnnotationGenerator : AbstractProcessor() {
     }
 
     override fun getSupportedSourceVersion(): SourceVersion {
-        return super.getSupportedSourceVersion()
+        return SourceVersion.latest()
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
-        return super.getSupportedAnnotationTypes()
+        return mutableSetOf(PrefAnnotation::class.java.name)
     }
 
     override fun process(p0: MutableSet<out TypeElement>?, p1: RoundEnvironment?): Boolean {
