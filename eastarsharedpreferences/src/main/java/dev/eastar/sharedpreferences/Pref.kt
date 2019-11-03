@@ -16,7 +16,9 @@
 package dev.eastar.sharedpreferences
 
 import android.content.SharedPreferences
+import dev.eastar.pref.annotation.PrefAnnotation
 
+@PrefAnnotation
 enum class Pref {
     TEST_EMPTY_BOOLEAN,
     TEST_EMPTY_INT,
