@@ -15,13 +15,19 @@
  */
 package dev.eastar.pref.annotation.generator
 
-import javax.annotation.processing.AbstractProcessor
-import javax.annotation.processing.ProcessingEnvironment
-import javax.annotation.processing.RoundEnvironment
+import com.google.auto.service.AutoService
+import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 
+@AutoService(Processor::class) // For registering the service
+@SupportedSourceVersion(SourceVersion.RELEASE_8) // to support Java 8
+@SupportedOptions(AnnotationGenerator.KAPT_KOTLIN_GENERATED_OPTION_NAME)
 public class AnnotationGenerator : AbstractProcessor() {
+    companion object {
+        const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
+    }
+
     override fun init(p0: ProcessingEnvironment?) {
         super.init(p0)
     }
