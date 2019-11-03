@@ -41,7 +41,8 @@ public class AnnotationGenerator : AbstractProcessor() {
         return mutableSetOf(PrefAnnotation::class.java.name)
     }
 
-    override fun process(p0: MutableSet<out TypeElement>?, p1: RoundEnvironment?): Boolean {
+    override fun process(set: MutableSet<out TypeElement>?, roundEnvironment: RoundEnvironment?): Boolean {
+
         return true
     }
 }
