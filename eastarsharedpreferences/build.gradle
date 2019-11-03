@@ -38,7 +38,7 @@ dependencies {
     androidTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     androidTestRuntimeOnly "de.mannodermaus.junit5:android-test-runner:1.0.0"
     androidTestRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.5.2"
-    androidTestRuntimeOnly "org.junit.platform:junit-platform-runner:1.4.2"
+    androidTestRuntimeOnly 'org.junit.platform:junit-platform-runner:1.5.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
