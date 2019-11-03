@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dev.eastar.pref.annotation.generater
+package dev.eastar.pref.annotation.generator
 
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.ProcessingEnvironment
@@ -35,6 +35,6 @@ public class AnnotationGenerator : AbstractProcessor() {
     }
 
     override fun process(p0: MutableSet<out TypeElement>?, p1: RoundEnvironment?): Boolean {
-
+        return true
     }
 }
