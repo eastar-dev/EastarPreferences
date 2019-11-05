@@ -20,6 +20,7 @@ import dev.eastar.pref.annotation.PrefAnnotation
 import java.io.File
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
+import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
@@ -49,25 +50,27 @@ public class AnnotationGenerator : AbstractProcessor() {
                 ?.forEach {
                     val className = it.simpleName.toString()
                     val packageName = processingEnv.elementUtils.getPackageOf(it).toString()
-
-                    generateClass(packageName, className)
+                    generateClass(packageName, className, it)
                 }
         return true
     }
 
-    private fun generateClass(packageName: String, className: String) {
+    private fun generateClass(packageName: String, className: String, roundEnvironment: Element) {
         val fileName = "$className$GENERATED_CLASS_TAIL_FIX"
-        val fileContent = KotlinClassBuilder(fileName, packageName).getContent()
-
+        val fileContent = KotlinClassBuilder(fileName, packageName, roundEnvironment).getContent()
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-
-        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
-        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, fileContent)
-        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
-
-
         val file = File(kaptKotlinGeneratedDir, "$fileName.kt")
-
         file.writeText(fileContent)
+
+        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
+        _DUMP(roundEnvironment)
+        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
     }
+
+    fun _DUMP(environment: Element) {
+        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, environment.toString() + " " + environment.asType())
+
+        environment.enclosedElements.forEach { _DUMP(it) }
+    }
+
 }
