@@ -14,8 +14,6 @@ sourceSets {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     kapt project(":pref_annotation")
     compileOnly project(':pref_annotation')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"

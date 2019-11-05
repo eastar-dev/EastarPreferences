@@ -6,22 +6,18 @@ package dev.eastar.pref.annotation.generator
  * Use KotlinPoet for production app
  * KotlinPoet can be found at https://github.com/square/kotlinpoet
  */
-class KotlinClassBuilder(className: String,
-                         packageName:String,
-                         greeting:String = "Merry Christmas!!"){
-
+class KotlinClassBuilder(className: String, packageName: String) {
     private val contentTemplate = """
         package $packageName
 
         class $className {
-             fun greeting() = "$greeting"
+             fun greeting() = "reeting"
         }
 
     """.trimIndent()
 
-    fun getContent() : String{
+    fun getContent(): String {
         return contentTemplate
     }
-
 
 }

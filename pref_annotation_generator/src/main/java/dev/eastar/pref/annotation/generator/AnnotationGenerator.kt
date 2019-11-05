@@ -50,11 +50,6 @@ public class AnnotationGenerator : AbstractProcessor() {
                     val className = it.simpleName.toString()
                     val packageName = processingEnv.elementUtils.getPackageOf(it).toString()
 
-                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
-                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, it.toString())
-                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, processingEnv.toString())
-                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
-
                     generateClass(packageName, className)
                 }
         return true
@@ -65,6 +60,12 @@ public class AnnotationGenerator : AbstractProcessor() {
         val fileContent = KotlinClassBuilder(fileName, packageName).getContent()
 
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
+
+        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
+        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, fileContent)
+        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
+
+
         val file = File(kaptKotlinGeneratedDir, "$fileName.kt")
 
         file.writeText(fileContent)
