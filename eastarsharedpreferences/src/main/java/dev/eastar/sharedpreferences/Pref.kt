@@ -15,31 +15,51 @@
  */
 package dev.eastar.sharedpreferences
 
+
+import android.app.Activity
+import dev.eastar.pref.annotation.Pref
+
 import android.content.ContentProvider
 import android.content.ContentValues
+import android.content.Context
 import android.content.SharedPreferences
 import android.database.Cursor
 import android.net.Uri
 import androidx.preference.PreferenceManager
-import dev.eastar.pref.annotation.PrefAnnotation
 
-@PrefAnnotation
-interface PrefInterface {
-    var preferences: SharedPreferences
-    //@formatter:off
-    var TEST_BOOLEAN       : Boolean
-    var TEST_INT           : Int
-    var TEST_FLOAT         : Float
-    var TEST_LONG          : Long
-    var TEST_STRING        : String
-    var TEST_SET           : Set<String>
+@Pref
+interface TestSample {
+    val TEST_EMPTY_BOOLEAN: Boolean
+    val TEST_EMPTY_INT: Int
+    val TEST_EMPTY_FLOAT: Float
+    val TEST_EMPTY_LONG: Long
+    val TEST_EMPTY_STRING: String
+    val TEST_EMPTY_SET: Set<String>
 
-    //@formatter:on
+    val TEST_BOOLEAN: Boolean
+    val TEST_INT: Int
+    val TEST_FLOAT: Float
+    val TEST_LONG: Long
+    val TEST_STRING: String
+    val TEST_SET: Set<String>
 }
 
-class PreferenceInitializer : ContentProvider() {
+@Pref
+interface TestSample2 {
+    val TEST_BOOLEAN: Boolean
+    val TEST_INT: Int
+    val TEST_FLOAT: Float
+    val TEST_LONG: Long
+    val TEST_STRING: String
+    val TEST_SET: Set<String>
+}
+
+
+
+class Initializer2 : ContentProvider() {
     override fun onCreate(): Boolean {
-        Pref.preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        TestSampleImpl.preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        TestSample2Impl.preferences =  context?.getSharedPreferences("NAME", Context.MODE_PRIVATE)!!
         return true
     }
 
@@ -50,54 +70,14 @@ class PreferenceInitializer : ContentProvider() {
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = TODO("not implemented")
 }
 
-object Pref : PrefInterface {
-    override lateinit var preferences: SharedPreferences
-    override var TEST_BOOLEAN: Boolean
-        get() = preferences.getBoolean("TEST_EMPTY_BOOLEAN", false)
-        set(value) = preferences.edit().putBoolean("TEST_BOOLEAN      ", value).apply()
-    override var TEST_INT: Int
-        get() = preferences.getInt("TEST_EMPTY_INT    ", -1)
-        set(value) = preferences.edit().putInt("TEST_INT          ", value).apply()
-    override var TEST_FLOAT: Float
-        get() = preferences.getFloat("TEST_EMPTY_FLOAT  ", -1F)
-        set(value) = preferences.edit().putFloat("TEST_FLOAT        ", value).apply()
-    override var TEST_LONG: Long
-        get() = preferences.getLong("TEST_EMPTY_LONG   ", -1L)
-        set(value) = preferences.edit().putLong("TEST_LONG         ", value).apply()
-    override var TEST_STRING: String
-        get() = preferences.getString("TEST_EMPTY_STRING ", "")!!
-        set(value) = preferences.edit().putString("TEST_STRING       ", value).apply()
-    override var TEST_SET: Set<String>
-        get() = preferences.getStringSet("TEST_EMPTY_SET    ", emptySet())!!
-        set(value) = preferences.edit().putStringSet("TEST_SET          ", value).apply()
-
-    //@formatter:off
-    fun setTestBoolean     (value   : Boolean                 ) = preferences.edit().putBoolean    ("TEST_BOOLEAN      ",    value).apply()
-    fun setTestInt         (value   : Int                     ) = preferences.edit().putInt        ("TEST_INT          ",    value).apply()
-    fun setTestFloat       (value   : Float                   ) = preferences.edit().putFloat      ("TEST_FLOAT        ",    value).apply()
-    fun setTestLong        (value   : Long                    ) = preferences.edit().putLong       ("TEST_LONG         ",    value).apply()
-    fun setTestString      (value   : String                  ) = preferences.edit().putString     ("TEST_STRING       ",    value).apply()
-    fun setTestSet         (value   : Set<String>             ) = preferences.edit().putStringSet  ("TEST_SET          ",    value).apply()
-
-
-    @JvmOverloads fun getTestBoolean     (defValue: Boolean     = false     ) = preferences.getBoolean    ("TEST_BOOLEAN      ", defValue)
-    @JvmOverloads fun getTestInt         (defValue: Int         = -1        ) = preferences.getInt        ("TEST_INT          ", defValue)
-    @JvmOverloads fun getTestFloat       (defValue: Float       = -1F       ) = preferences.getFloat      ("TEST_FLOAT        ", defValue)
-    @JvmOverloads fun getTestLong        (defValue: Long        = -1L       ) = preferences.getLong       ("TEST_LONG         ", defValue)
-    @JvmOverloads fun getTestString      (defValue: String      = ""        ) = preferences.getString     ("TEST_STRING       ", defValue)!!
-    @JvmOverloads fun getTestSet         (defValue: Set<String> = emptySet()) = preferences.getStringSet  ("TEST_SET          ", defValue)!!
-
-    //@formatter:on
-}
-
 class Test {
     fun test() {
-        val b = Pref.TEST_BOOLEAN
+        val b = TestSampleImpl.TEST_BOOLEAN
 
-        Pref.TEST_BOOLEAN = true
+        TestSampleImpl.TEST_BOOLEAN = true
 
-        Pref.getTestBoolean(false)
-        Pref.setTestBoolean(false)
+        //Pref.getTestBoolean(false)
+        //Pref.setTestBoolean(false)
     }
-
 }
+
