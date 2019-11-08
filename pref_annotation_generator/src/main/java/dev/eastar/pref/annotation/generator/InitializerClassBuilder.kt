@@ -21,9 +21,9 @@ import androidx.preference.PreferenceManager
 
 class Initializer : ContentProvider() {
     override fun onCreate(): Boolean {
-        //TestSampleImpl.preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        //TestSample2Impl.preferences =  context?.getSharedPreferences("NAME", Context.MODE_PRIVATE)!!
-${environments.map {it.simpleName}.joinToString("\n") {"""        ${it}Impl.preferences =  context?.getSharedPreferences("$it", Context.MODE_PRIVATE)!!"""}}
+${environments.map { it.simpleName }.joinToString("\n") {
+        """        ${it}Impl.preferences =  context?.getSharedPreferences("$it", Context.MODE_PRIVATE)!!"""
+    }}
         return true
     }
 
