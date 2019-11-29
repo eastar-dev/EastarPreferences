@@ -20,3 +20,7 @@ package dev.eastar.pref.annotation
 @MustBeDocumented
 annotation class Pref
 
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+@MustBeDocumented
+annotation class DefaultPref

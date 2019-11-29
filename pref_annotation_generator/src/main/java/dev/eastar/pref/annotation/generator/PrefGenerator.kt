@@ -17,12 +17,12 @@ package dev.eastar.pref.annotation.generator
 
 import com.google.auto.service.AutoService
 import dev.eastar.pref.annotation.Pref
+import dev.eastar.pref.annotation.generator.ImplClassBuilder.Companion.GENERATED_CLASS_TAIL_FIX
 import java.io.File
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
-import javax.tools.Diagnostic
 
 @AutoService(Processor::class) // For registering the service
 @SupportedSourceVersion(SourceVersion.RELEASE_8) // to support Java 8
@@ -30,11 +30,13 @@ import javax.tools.Diagnostic
 public class PrefGenerator : AbstractProcessor() {
     companion object {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
-        const val GENERATED_CLASS_TAIL_FIX = "Impl"
+
     }
 
-    override fun init(p0: ProcessingEnvironment?) {
-        super.init(p0)
+    override fun init(processingEnvironment: ProcessingEnvironment?) {
+        super.init(processingEnvironment)
+        processingEnvironment?.let { Log.processingEnvironment = it }
+
     }
 
     override fun getSupportedSourceVersion(): SourceVersion {
@@ -46,21 +48,24 @@ public class PrefGenerator : AbstractProcessor() {
     }
 
     override fun process(set: MutableSet<out TypeElement>?, roundEnvironment: RoundEnvironment?): Boolean {
-        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
-        roundEnvironment?.getElementsAnnotatedWith(Pref::class.java)?.forEach { _DUMP(it) }
-        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "===========================================================")
+        Log.w("===========================================================")
+        roundEnvironment
+                ?.getElementsAnnotatedWith(Pref::class.java)
+                ?.forEach { Log.environmentTree(it) }
+        Log.w("===========================================================")
 
-        roundEnvironment?.getElementsAnnotatedWith(Pref::class.java)
+        roundEnvironment
+                ?.getElementsAnnotatedWith(Pref::class.java)
                 ?.forEach {
-                    val className = it.simpleName.toString()
                     val packageName = processingEnv.elementUtils.getPackageOf(it).toString()
-                    generateImplClass(packageName, className, it)
-                    processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, className + "completed")
+                    generateImplClass(packageName, it)
                 }
 
-        roundEnvironment?.getElementsAnnotatedWith(Pref::class.java)?.let {
-            generateInitializerClass(it)
-        }
+        roundEnvironment
+                ?.getElementsAnnotatedWith(Pref::class.java)
+                ?.let {
+                    generateInitializerClass(it)
+                }
         return true
     }
 
@@ -74,16 +79,11 @@ public class PrefGenerator : AbstractProcessor() {
         file.writeText(fileContent)
     }
 
-    private fun generateImplClass(packageName: String, className: String, roundEnvironment: Element) {
-        val fileName = "$className$GENERATED_CLASS_TAIL_FIX"
-        val fileContent = ImplClassBuilder(fileName, packageName, roundEnvironment).getContent()
+    private fun generateImplClass(packageName: String, roundEnvironment: Element) {
+        val className = "${roundEnvironment.simpleName}$GENERATED_CLASS_TAIL_FIX"
+        val fileContent = ImplClassBuilder(packageName, roundEnvironment).getContent()
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-        val file = File(kaptKotlinGeneratedDir, "$fileName.kt")
+        val file = File(kaptKotlinGeneratedDir, "$className.kt")
         file.writeText(fileContent)
-    }
-
-    fun _DUMP(environment: Element) {
-        processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, environment.simpleName)
-        environment.enclosedElements.forEach { _DUMP(it) }
     }
 }

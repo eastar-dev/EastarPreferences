@@ -2,9 +2,9 @@
     package="dev.eastar.sharedpreferences">
 
     <application>
-        <provider
-            android:name=".PreferenceInitializer"
-            android:authorities="${applicationId}.preference"
-            android:exported="false" />
+<!--        <provider-->
+<!--            android:name=".PreferenceInitializer"-->
+<!--            android:authorities="${applicationId}.preference"-->
+<!--            android:exported="false" />-->
     </application>
 </manifest>

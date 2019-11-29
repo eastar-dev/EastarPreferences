@@ -16,16 +16,13 @@
 package dev.eastar.sharedpreferences
 
 
-import android.app.Activity
-import dev.eastar.pref.annotation.Pref
-
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.Context
-import android.content.SharedPreferences
 import android.database.Cursor
 import android.net.Uri
 import androidx.preference.PreferenceManager
+import dev.eastar.pref.annotation.Pref
 
 @Pref
 interface TestSample {

@@ -87,8 +87,6 @@ class SharePreferencesHelperTest {
         assertTrue(Long.MAX_VALUE                                   == TestSampleImpl.TEST_LONG   )
         assertTrue("enum define shared preferences"                 == TestSampleImpl.TEST_STRING )
         assertTrue(setOf("enum", "define", "shared", "preferences") == TestSampleImpl.TEST_SET    )
-
-
     }
 
     @DisplayName("값 넣은 후 기본값이 아니라 저장된 값이 불러오는지 테스트 ")
