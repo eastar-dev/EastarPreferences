@@ -17,7 +17,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     compileOnly project(':pref_annotation')
-
     // configuration generator for service providers
     kapt "com.google.auto.service:auto-service:1.0-rc5"
     implementation "com.google.auto.service:auto-service:1.0-rc5"

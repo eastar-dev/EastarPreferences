@@ -17,6 +17,7 @@ package dev.eastar.pref.annotation.generator
 
 import com.google.auto.service.AutoService
 import dev.eastar.pref.annotation.Pref
+import dev.eastar.pref.annotation.generator.ClassBuilderInitializer.Companion.PACKAGE_NAME
 import dev.eastar.pref.annotation.generator.ClassBuilderPref.Companion.GENERATED_CLASS_PRE_FIX
 import java.io.File
 import javax.annotation.processing.*
@@ -70,9 +71,14 @@ public class AnnotationGenerator : AbstractProcessor() {
     private fun generateInitializerClass(roundEnvironment: Set<Element>) {
         if (roundEnvironment.isEmpty())
             return
+
+        roundEnvironment.forEach {
+            Log.w(it.toString())
+        }
+
         val className = "${GENERATED_CLASS_PRE_FIX}Initializer"
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-        val file = File("$kaptKotlinGeneratedDir/dev/eastar/sharedpreferences", "$className.kt")
+        val file = File("$kaptKotlinGeneratedDir/${PACKAGE_NAME.replace('.', '/')}", "$className.kt")
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderInitializer(roundEnvironment).getContent()
         file.writeText(fileContent)
