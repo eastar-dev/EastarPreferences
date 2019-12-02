@@ -15,13 +15,6 @@
  */
 package dev.eastar.sharedpreferences
 
-
-import android.content.ContentProvider
-import android.content.ContentValues
-import android.content.Context
-import android.database.Cursor
-import android.net.Uri
-import androidx.preference.PreferenceManager
 import dev.eastar.pref.annotation.Pref
 
 @Pref
@@ -50,31 +43,3 @@ interface TestSample2 {
     val TEST_STRING: String
     val TEST_SET: Set<String>
 }
-
-
-
-class Initializer2 : ContentProvider() {
-    override fun onCreate(): Boolean {
-        PrefTestSample.preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        PrefTestSample2.preferences =  context?.getSharedPreferences("NAME", Context.MODE_PRIVATE)!!
-        return true
-    }
-
-    override fun getType(uri: Uri): String? = TODO("not implemented")
-    override fun insert(uri: Uri, values: ContentValues?): Uri? = TODO("not implemented")
-    override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?): Cursor? = TODO("not implemented")
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int = TODO("not implemented")
-    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = TODO("not implemented")
-}
-
-class Test {
-    fun test() {
-        val b = PrefTestSample.tEST_BOOLEAN
-
-        PrefTestSample.tEST_BOOLEAN = true
-
-        //Pref.getTestBoolean(false)
-        //Pref.setTestBoolean(false)
-    }
-}
-
