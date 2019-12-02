@@ -19,8 +19,8 @@ class SharePreferencesHelperTest {
         @JvmStatic
         fun beforeAll() {
             val context = InstrumentationRegistry.getInstrumentation().targetContext
-            TestSampleImpl.preferences = context.getSharedPreferences(SecureRandom.getInstanceStrong().nextInt().toString(), Context.MODE_PRIVATE)
-            TestSampleImpl.preferences.edit(true) { clear() }
+            PrefTestSample.preferences = context.getSharedPreferences(SecureRandom.getInstanceStrong().nextInt().toString(), Context.MODE_PRIVATE)
+            PrefTestSample.preferences.edit(true) { clear() }
         }
     }
 
@@ -28,12 +28,12 @@ class SharePreferencesHelperTest {
     @Test
     fun testEmptyValue() {
         //@formatter:off
-        assertTrue(TestSampleImpl.TEST_EMPTY_BOOLEAN == false             )
-        assertTrue(TestSampleImpl.TEST_EMPTY_INT     == 0                 )
-        assertTrue(TestSampleImpl.TEST_EMPTY_FLOAT   == 0F                )
-        assertTrue(TestSampleImpl.TEST_EMPTY_LONG    == 0L                )
-        assertTrue(TestSampleImpl.TEST_EMPTY_STRING  == ""                )
-        assertTrue(TestSampleImpl.TEST_EMPTY_SET     == emptySet<String>())
+        assertTrue(PrefTestSample.tEST_EMPTY_BOOLEAN == false             )
+        assertTrue(PrefTestSample.tEST_EMPTY_INT     == 0                 )
+        assertTrue(PrefTestSample.tEST_EMPTY_FLOAT   == 0F                )
+        assertTrue(PrefTestSample.tEST_EMPTY_LONG    == 0L                )
+        assertTrue(PrefTestSample.tEST_EMPTY_STRING  == ""                )
+        assertTrue(PrefTestSample.tEST_EMPTY_SET     == emptySet<String>())
         //@formatter:on
     }
 
@@ -41,12 +41,12 @@ class SharePreferencesHelperTest {
     @Test
     fun testEmptyValueOperator() {
         //@formatter:off
-        val emptyBoolean : Boolean     = TestSampleImpl.TEST_EMPTY_BOOLEAN
-        val emptyInt     : Int         = TestSampleImpl.TEST_EMPTY_INT
-        val emptyFloat   : Float       = TestSampleImpl.TEST_EMPTY_FLOAT
-        val emptyLong    : Long        = TestSampleImpl.TEST_EMPTY_LONG
-        val emptyString  : String      = TestSampleImpl.TEST_EMPTY_STRING
-        val emptySet     : Set<String> = TestSampleImpl.TEST_EMPTY_SET
+        val emptyBoolean : Boolean     = PrefTestSample.tEST_EMPTY_BOOLEAN
+        val emptyInt     : Int         = PrefTestSample.tEST_EMPTY_INT
+        val emptyFloat   : Float       = PrefTestSample.tEST_EMPTY_FLOAT
+        val emptyLong    : Long        = PrefTestSample.tEST_EMPTY_LONG
+        val emptyString  : String      = PrefTestSample.tEST_EMPTY_STRING
+        val emptySet     : Set<String> = PrefTestSample.tEST_EMPTY_SET
         assertTrue(false               == emptyBoolean)
         assertTrue(0                   == emptyInt    )
         assertTrue(0F                  == emptyFloat  )
@@ -61,12 +61,12 @@ class SharePreferencesHelperTest {
     @Test
     fun testDefaultValue() {
         //@formatter:off
-        assertTrue(TestSampleImpl.TEST_EMPTY_BOOLEAN == true                                             )
-        assertTrue(TestSampleImpl.TEST_EMPTY_INT     == 123                                              )
-        assertTrue(TestSampleImpl.TEST_EMPTY_FLOAT   == 1.23F                                            )
-        assertTrue(TestSampleImpl.TEST_EMPTY_LONG    == Long.MAX_VALUE                                   )
-        assertTrue(TestSampleImpl.TEST_EMPTY_STRING  == "enum define shared preferences"                 )
-        assertTrue(TestSampleImpl.TEST_EMPTY_SET     == setOf("enum", "define", "shared", "preferences") )
+        assertTrue(PrefTestSample.tEST_EMPTY_BOOLEAN == true                                             )
+        assertTrue(PrefTestSample.tEST_EMPTY_INT     == 123                                              )
+        assertTrue(PrefTestSample.tEST_EMPTY_FLOAT   == 1.23F                                            )
+        assertTrue(PrefTestSample.tEST_EMPTY_LONG    == Long.MAX_VALUE                                   )
+        assertTrue(PrefTestSample.tEST_EMPTY_STRING  == "enum define shared preferences"                 )
+        assertTrue(PrefTestSample.tEST_EMPTY_SET     == setOf("enum", "define", "shared", "preferences") )
         //@formatter:on
     }
 
@@ -74,38 +74,38 @@ class SharePreferencesHelperTest {
     @Test
     fun testPutAndGetValue() {
         //@formatter:off
-        TestSampleImpl.TEST_BOOLEAN = true
-        TestSampleImpl.TEST_INT     = 123
-        TestSampleImpl.TEST_FLOAT   = 1.23F
-        TestSampleImpl.TEST_LONG    = Long.MAX_VALUE
-        TestSampleImpl.TEST_STRING  = "enum define shared preferences"
-        TestSampleImpl.TEST_SET     = setOf("enum", "define", "shared", "preferences")
+        PrefTestSample.tEST_BOOLEAN = true
+        PrefTestSample.tEST_INT     = 123
+        PrefTestSample.tEST_FLOAT   = 1.23F
+        PrefTestSample.tEST_LONG    = Long.MAX_VALUE
+        PrefTestSample.tEST_STRING  = "enum define shared preferences"
+        PrefTestSample.tEST_SET     = setOf("enum", "define", "shared", "preferences")
 
-        assertTrue(true                                             == TestSampleImpl.TEST_BOOLEAN)
-        assertTrue(123                                              == TestSampleImpl.TEST_INT    )
-        assertTrue(1.23F                                            == TestSampleImpl.TEST_FLOAT  )
-        assertTrue(Long.MAX_VALUE                                   == TestSampleImpl.TEST_LONG   )
-        assertTrue("enum define shared preferences"                 == TestSampleImpl.TEST_STRING )
-        assertTrue(setOf("enum", "define", "shared", "preferences") == TestSampleImpl.TEST_SET    )
+        assertTrue(true                                             == PrefTestSample.tEST_BOOLEAN)
+        assertTrue(123                                              == PrefTestSample.tEST_INT    )
+        assertTrue(1.23F                                            == PrefTestSample.tEST_FLOAT  )
+        assertTrue(Long.MAX_VALUE                                   == PrefTestSample.tEST_LONG   )
+        assertTrue("enum define shared preferences"                 == PrefTestSample.tEST_STRING )
+        assertTrue(setOf("enum", "define", "shared", "preferences") == PrefTestSample.tEST_SET    )
     }
 
     @DisplayName("값 넣은 후 기본값이 아니라 저장된 값이 불러오는지 테스트 ")
     @Test
     fun testPutAndGetValueNotDefault() {
         //@formatter:off
-        TestSampleImpl.TEST_BOOLEAN = true
-        TestSampleImpl.TEST_INT     = 123
-        TestSampleImpl.TEST_FLOAT   = 1.23F
-        TestSampleImpl.TEST_LONG    = Long.MAX_VALUE
-        TestSampleImpl.TEST_STRING  = "enum define shared preferences"
-        TestSampleImpl.TEST_SET     = setOf("enum", "define", "shared", "preferences")
+        PrefTestSample.tEST_BOOLEAN = true
+        PrefTestSample.tEST_INT     = 123
+        PrefTestSample.tEST_FLOAT   = 1.23F
+        PrefTestSample.tEST_LONG    = Long.MAX_VALUE
+        PrefTestSample.tEST_STRING  = "enum define shared preferences"
+        PrefTestSample.tEST_SET     = setOf("enum", "define", "shared", "preferences")
 
-        assertTrue(true                                             == TestSampleImpl.TEST_BOOLEAN )
-        assertTrue(123                                              == TestSampleImpl.TEST_INT     )
-        assertTrue(1.23F                                            == TestSampleImpl.TEST_FLOAT   )
-        assertTrue(Long.MAX_VALUE                                   == TestSampleImpl.TEST_LONG    )
-        assertTrue("enum define shared preferences"                 == TestSampleImpl.TEST_STRING  )
-        assertTrue(setOf("enum", "define", "shared", "preferences") == TestSampleImpl.TEST_SET     )
+        assertTrue(true                                             == PrefTestSample.tEST_BOOLEAN )
+        assertTrue(123                                              == PrefTestSample.tEST_INT     )
+        assertTrue(1.23F                                            == PrefTestSample.tEST_FLOAT   )
+        assertTrue(Long.MAX_VALUE                                   == PrefTestSample.tEST_LONG    )
+        assertTrue("enum define shared preferences"                 == PrefTestSample.tEST_STRING  )
+        assertTrue(setOf("enum", "define", "shared", "preferences") == PrefTestSample.tEST_SET     )
     }
 }
 

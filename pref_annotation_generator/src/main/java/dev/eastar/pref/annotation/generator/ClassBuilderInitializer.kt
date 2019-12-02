@@ -1,5 +1,6 @@
 package dev.eastar.pref.annotation.generator
 
+import dev.eastar.pref.annotation.generator.ClassBuilderPref.Companion.GENERATED_CLASS_PRE_FIX
 import javax.lang.model.element.Element
 
 /**
@@ -8,7 +9,7 @@ import javax.lang.model.element.Element
  * Use KotlinPoet for production app
  * KotlinPoet can be found at https://github.com/square/kotlinpoet
  */
-class InitializerClassBuilder(environments: Set<Element>) {
+class ClassBuilderInitializer(environments: Set<Element>) {
     private val contentTemplate = """
 package dev.eastar.sharedpreferences
 
@@ -19,10 +20,10 @@ import android.database.Cursor
 import android.net.Uri
 import androidx.preference.PreferenceManager
 
-class Initializer : ContentProvider() {
+class ${GENERATED_CLASS_PRE_FIX}Initializer : ContentProvider() {
     override fun onCreate(): Boolean {
-${environments.map { it.simpleName }.joinToString("\n") {
-        """        ${it}Impl.preferences =  context?.getSharedPreferences("$it", Context.MODE_PRIVATE)!!"""
+${environments.joinToString("\n") {
+        """        ${it.enclosingElement}.$GENERATED_CLASS_PRE_FIX${it.simpleName}.preferences =  context?.getSharedPreferences("$it}", Context.MODE_PRIVATE)!!"""
     }}
         return true
     }

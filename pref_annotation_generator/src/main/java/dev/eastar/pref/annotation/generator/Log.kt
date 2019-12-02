@@ -14,7 +14,13 @@ object Log {
     //fun e(mag: CharSequence) = processingEnvironment.messager.printMessage(Diagnostic.Kind.ERROR, mag)
 
     fun environmentTree(environment: Element, depth: Int = 0) {
-        w("  ".repeat(depth) + environment.simpleName)
+        w("  ".repeat(depth)
+                + "\n>" + environment.simpleName
+                + "\n>" + environment.kind
+                + "\n>" + environment.modifiers
+                + "\n>" + environment.asType()
+                + "\n>" + environment.enclosingElement
+                + "\n>" + environment.annotationMirrors)
         environment.enclosedElements.forEach { environmentTree(it, depth + 1) }
     }
 }

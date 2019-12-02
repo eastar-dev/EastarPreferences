@@ -17,7 +17,7 @@ package dev.eastar.pref.annotation.generator
 
 import com.google.auto.service.AutoService
 import dev.eastar.pref.annotation.Pref
-import dev.eastar.pref.annotation.generator.ImplClassBuilder.Companion.GENERATED_CLASS_TAIL_FIX
+import dev.eastar.pref.annotation.generator.ClassBuilderPref.Companion.GENERATED_CLASS_PRE_FIX
 import java.io.File
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
@@ -26,11 +26,10 @@ import javax.lang.model.element.TypeElement
 
 @AutoService(Processor::class) // For registering the service
 @SupportedSourceVersion(SourceVersion.RELEASE_8) // to support Java 8
-@SupportedOptions(PrefGenerator.KAPT_KOTLIN_GENERATED_OPTION_NAME)
-public class PrefGenerator : AbstractProcessor() {
+@SupportedOptions(AnnotationGenerator.KAPT_KOTLIN_GENERATED_OPTION_NAME)
+public class AnnotationGenerator : AbstractProcessor() {
     companion object {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
-
     }
 
     override fun init(processingEnvironment: ProcessingEnvironment?) {
@@ -57,7 +56,7 @@ public class PrefGenerator : AbstractProcessor() {
         roundEnvironment
                 ?.getElementsAnnotatedWith(Pref::class.java)
                 ?.forEach {
-                    generateImplClass(processingEnv, it)
+                    generateImplClass(it)
                 }
 
         roundEnvironment
@@ -71,19 +70,20 @@ public class PrefGenerator : AbstractProcessor() {
     private fun generateInitializerClass(roundEnvironment: Set<Element>) {
         if (roundEnvironment.isEmpty())
             return
-        val fileName = "Initializer"
-        val fileContent = InitializerClassBuilder(roundEnvironment).getContent()
+        val className = "${GENERATED_CLASS_PRE_FIX}Initializer"
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-        val file = File(kaptKotlinGeneratedDir, "$fileName.kt")
+        val file = File("$kaptKotlinGeneratedDir/dev/eastar/sharedpreferences", "$className.kt")
+        file.parentFile.mkdirs()
+        val fileContent = ClassBuilderInitializer(roundEnvironment).getContent()
         file.writeText(fileContent)
     }
 
     private fun generateImplClass(roundEnvironment: Element) {
-        val packageName = processingEnv.elementUtils.getPackageOf(roundEnvironment).toString()
-        val className = "${roundEnvironment.simpleName}$GENERATED_CLASS_TAIL_FIX"
-        val fileContent = ImplClassBuilder(processingEnv, roundEnvironment).getContent()
+        val className = "$GENERATED_CLASS_PRE_FIX${roundEnvironment.simpleName}"
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-        val file = File(kaptKotlinGeneratedDir, "$className.kt")
+        val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "$className.kt")
+        file.parentFile.mkdirs()
+        val fileContent = ClassBuilderPref(roundEnvironment).getContent()
         file.writeText(fileContent)
     }
 }

@@ -55,8 +55,8 @@ interface TestSample2 {
 
 class Initializer2 : ContentProvider() {
     override fun onCreate(): Boolean {
-        TestSampleImpl.preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        TestSample2Impl.preferences =  context?.getSharedPreferences("NAME", Context.MODE_PRIVATE)!!
+        PrefTestSample.preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        PrefTestSample2.preferences =  context?.getSharedPreferences("NAME", Context.MODE_PRIVATE)!!
         return true
     }
 
@@ -69,9 +69,9 @@ class Initializer2 : ContentProvider() {
 
 class Test {
     fun test() {
-        val b = TestSampleImpl.TEST_BOOLEAN
+        val b = PrefTestSample.tEST_BOOLEAN
 
-        TestSampleImpl.TEST_BOOLEAN = true
+        PrefTestSample.tEST_BOOLEAN = true
 
         //Pref.getTestBoolean(false)
         //Pref.setTestBoolean(false)
