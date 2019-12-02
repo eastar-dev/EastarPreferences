@@ -57,8 +57,7 @@ public class PrefGenerator : AbstractProcessor() {
         roundEnvironment
                 ?.getElementsAnnotatedWith(Pref::class.java)
                 ?.forEach {
-                    val packageName = processingEnv.elementUtils.getPackageOf(it).toString()
-                    generateImplClass(packageName, it)
+                    generateImplClass(processingEnv, it)
                 }
 
         roundEnvironment
@@ -79,9 +78,10 @@ public class PrefGenerator : AbstractProcessor() {
         file.writeText(fileContent)
     }
 
-    private fun generateImplClass(packageName: String, roundEnvironment: Element) {
+    private fun generateImplClass(roundEnvironment: Element) {
+        val packageName = processingEnv.elementUtils.getPackageOf(roundEnvironment).toString()
         val className = "${roundEnvironment.simpleName}$GENERATED_CLASS_TAIL_FIX"
-        val fileContent = ImplClassBuilder(packageName, roundEnvironment).getContent()
+        val fileContent = ImplClassBuilder(processingEnv, roundEnvironment).getContent()
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
         val file = File(kaptKotlinGeneratedDir, "$className.kt")
         file.writeText(fileContent)
