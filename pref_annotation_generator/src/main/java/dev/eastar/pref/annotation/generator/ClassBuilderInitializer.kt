@@ -11,9 +11,8 @@ import javax.lang.model.element.Element
  * KotlinPoet can be found at https://github.com/square/kotlinpoet
  */
 class ClassBuilderInitializer(environments: Set<Element>) {
+
     private val preferences =
-
-
             environments.joinToString("\n") {
                 val ann = it.getAnnotation(Pref::class.java)
                 """        ${it.enclosingElement}.$GENERATED_CLASS_PRE_FIX${it.simpleName}.preferences = """ + when {
@@ -54,6 +53,17 @@ $preferences
     fun getContent() = contentTemplate
 
     companion object {
+        val androidManifest = """<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dev.eastar.sharedpreferences">
+
+    <application>
+        <provider
+            android:name=".${GENERATED_CLASS_PRE_FIX}Initializer"
+            android:authorities="applicationId.preference"
+            android:exported="false" />
+    </application>
+</manifest>
+"""
         const val PACKAGE_NAME = "dev.eastar.sharedpreferences"
     }
 

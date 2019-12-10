@@ -57,7 +57,7 @@ public class AnnotationGenerator : AbstractProcessor() {
         roundEnvironment
                 ?.getElementsAnnotatedWith(Pref::class.java)
                 ?.forEach {
-                    generateImplClass(it)
+                    generatePrefClass(it)
                 }
 
         roundEnvironment
@@ -82,9 +82,18 @@ public class AnnotationGenerator : AbstractProcessor() {
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderInitializer(roundEnvironment).getContent()
         file.writeText(fileContent)
+
+
+        //val fileAndroidManifest = File(File(kaptKotlinGeneratedDir), "AndroidManifest.xml")
+        //Log.w(fileAndroidManifest.parentFile.toString())
+        //val result = fileAndroidManifest.parentFile.mkdirs()
+        //Log.w(result.toString())
+        //Log.w(ClassBuilderInitializer.androidManifest)
+        //fileAndroidManifest.writeText(ClassBuilderInitializer.androidManifest)
+
     }
 
-    private fun generateImplClass(roundEnvironment: Element) {
+    private fun generatePrefClass(roundEnvironment: Element) {
         val className = "$GENERATED_CLASS_PRE_FIX${roundEnvironment.simpleName}"
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
         val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "$className.kt")
