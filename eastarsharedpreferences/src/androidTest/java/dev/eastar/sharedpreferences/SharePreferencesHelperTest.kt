@@ -1,21 +1,16 @@
-@file:Suppress("SimplifyBooleanWithConstants")
-
 package dev.eastar.sharedpreferences
 
 import android.content.Context
 import androidx.core.content.edit
 import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
+import junit.framework.TestCase.assertTrue
+import org.junit.Before
+import org.junit.Test
 import java.security.SecureRandom
 
-@DisplayName("SharedPreferences 테스트")
 class SharePreferencesHelperTest {
-
     companion object {
-        @BeforeAll
+        @Before
         @JvmStatic
         fun beforeAll() {
             val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -24,7 +19,6 @@ class SharePreferencesHelperTest {
         }
     }
 
-    @DisplayName("값이 없을때 테스트")
     @Test
     fun testEmptyValue() {
         //@formatter:off
@@ -37,7 +31,6 @@ class SharePreferencesHelperTest {
         //@formatter:on
     }
 
-    @DisplayName("오퍼레이터를 이용한 값이 없을때 테스트")
     @Test
     fun testEmptyValueOperator() {
         //@formatter:off
@@ -57,7 +50,6 @@ class SharePreferencesHelperTest {
 
     }
 
-    @DisplayName("값이 없을때 기본값 테스트")
     @Test
     fun testDefaultValue() {
         //@formatter:off
@@ -70,7 +62,6 @@ class SharePreferencesHelperTest {
         //@formatter:on
     }
 
-    @DisplayName("값 넣은 후 불러오기 테스트")
     @Test
     fun testPutAndGetValue() {
         //@formatter:off
@@ -89,7 +80,6 @@ class SharePreferencesHelperTest {
         assertTrue(setOf("enum", "define", "shared", "preferences") == PrefTestSample.tEST_SET    )
     }
 
-    @DisplayName("값 넣은 후 기본값이 아니라 저장된 값이 불러오는지 테스트 ")
     @Test
     fun testPutAndGetValueNotDefault() {
         //@formatter:off

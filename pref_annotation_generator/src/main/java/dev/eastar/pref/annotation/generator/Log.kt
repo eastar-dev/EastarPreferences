@@ -6,7 +6,6 @@ import javax.tools.Diagnostic
 
 object Log {
     lateinit var processingEnvironment: ProcessingEnvironment
-
     //fun o(mag: CharSequence) = processingEnvironment.messager.printMessage(Diagnostic.Kind.OTHER, mag)
     //fun n(mag: CharSequence) = processingEnvironment.messager.printMessage(Diagnostic.Kind.NOTE, mag)
     //fun m(mag: CharSequence) = processingEnvironment.messager.printMessage(Diagnostic.Kind.MANDATORY_WARNING, mag)

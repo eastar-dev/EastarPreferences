@@ -15,7 +15,6 @@
  */
 package dev.eastar.pref.annotation.generator
 
-import com.google.auto.service.AutoService
 import dev.eastar.pref.annotation.Pref
 import dev.eastar.pref.annotation.generator.ClassBuilderInitializer.Companion.PACKAGE_NAME
 import dev.eastar.pref.annotation.generator.ClassBuilderPref.Companion.GENERATED_CLASS_PRE_FIX
@@ -25,7 +24,6 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 
-@AutoService(Processor::class) // For registering the service
 @SupportedSourceVersion(SourceVersion.RELEASE_8) // to support Java 8
 @SupportedOptions(AnnotationGenerator.KAPT_KOTLIN_GENERATED_OPTION_NAME)
 public class AnnotationGenerator : AbstractProcessor() {
@@ -48,10 +46,20 @@ public class AnnotationGenerator : AbstractProcessor() {
     }
 
     override fun process(set: MutableSet<out TypeElement>?, roundEnvironment: RoundEnvironment?): Boolean {
-        Log.w("===========================================================")
-        roundEnvironment
-                ?.getElementsAnnotatedWith(Pref::class.java)
-                ?.forEach { Log.environmentTree(it) }
+        //Log.w("===========================================================")
+        //roundEnvironment
+        //        ?.getElementsAnnotatedWith(Pref::class.java)
+        //        ?.forEach { Log.environmentTree(it) }
+        //Log.w("===========================================================")
+
+        //runCatching {
+        //    Log.w("AndroidManifest.xml >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        //    val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
+        //    Log.w(kaptKotlinGeneratedDir ?: "")
+        //}.onFailure {
+        //    Log.w(it.message ?: it.javaClass.name)
+        //    it.stackTrace.forEach { Log.w(it.toString()) }
+        //}
         Log.w("===========================================================")
 
         roundEnvironment
@@ -82,7 +90,6 @@ public class AnnotationGenerator : AbstractProcessor() {
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderInitializer(roundEnvironment).getContent()
         file.writeText(fileContent)
-
 
         //val fileAndroidManifest = File(File(kaptKotlinGeneratedDir), "AndroidManifest.xml")
         //Log.w(fileAndroidManifest.parentFile.toString())
