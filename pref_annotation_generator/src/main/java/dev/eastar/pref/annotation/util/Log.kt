@@ -1,4 +1,4 @@
-package dev.eastar.pref.annotation.generator
+package dev.eastar.pref.annotation.util
 
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.Element

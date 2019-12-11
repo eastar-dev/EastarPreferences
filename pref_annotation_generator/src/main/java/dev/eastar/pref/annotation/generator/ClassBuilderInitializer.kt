@@ -1,7 +1,6 @@
 package dev.eastar.pref.annotation.generator
 
 import dev.eastar.pref.annotation.Pref
-import dev.eastar.pref.annotation.generator.ClassBuilderPref.Companion.GENERATED_CLASS_PRE_FIX
 import javax.lang.model.element.Element
 
 /**
@@ -23,7 +22,6 @@ class ClassBuilderInitializer(environments: Set<Element>) {
                     else ->
                         """context?.getSharedPreferences("$it", Context.MODE_PRIVATE)!!"""
                 }
-
             }
 
     private val contentTemplate = """
@@ -50,21 +48,10 @@ $preferences
 }
 """
 
+    val provider get() = """        <provider
+            android:name="$GENERATED_INITIALIZER_CLASS"
+            android:authorities="dev.eastar.kapt.sharedpreferences.demo.preference"
+            android:exported="false" />"""
+
     fun getContent() = contentTemplate
-
-    companion object {
-        val androidManifest = """<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dev.eastar.sharedpreferences">
-
-    <application>
-        <provider
-            android:name=".${GENERATED_CLASS_PRE_FIX}Initializer"
-            android:authorities="applicationId.preference"
-            android:exported="false" />
-    </application>
-</manifest>
-"""
-        const val PACKAGE_NAME = "dev.eastar.sharedpreferences"
-    }
-
 }

@@ -16,8 +16,7 @@
 package dev.eastar.pref.annotation.generator
 
 import dev.eastar.pref.annotation.Pref
-import dev.eastar.pref.annotation.generator.ClassBuilderInitializer.Companion.PACKAGE_NAME
-import dev.eastar.pref.annotation.generator.ClassBuilderPref.Companion.GENERATED_CLASS_PRE_FIX
+import dev.eastar.pref.annotation.util.Log
 import java.io.File
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
@@ -31,9 +30,13 @@ public class AnnotationGenerator : AbstractProcessor() {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
     }
 
+    private lateinit var kaptKotlinGeneratedDir: String
+
     override fun init(processingEnvironment: ProcessingEnvironment?) {
         super.init(processingEnvironment)
         Log.processingEnvironment = processingEnv
+        kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]!!
+
         generateInitializerClass(emptySet())
     }
 
@@ -88,32 +91,18 @@ public class AnnotationGenerator : AbstractProcessor() {
         }.getOrNull()
         manifests?.forEach {
             Log.w("$it")
-            it.
+
             it.appendText("\n<!-- hello -->")
         }
     }
 
-    val provider = """        <provider
-            android:name="dev.eastar.sharedpreferences.PrefInitializer"
-            android:authorities="dev.eastar.kapt.sharedpreferences.demo.preference"
-            android:exported="false" />"""
 
-    private fun generatePrefClass(roundEnvironment: Element) {
-        Log.w(roundEnvironment.toString())
 
-        val className = "$GENERATED_CLASS_PRE_FIX${roundEnvironment.simpleName}"
-        val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-        val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "$className.kt")
-        file.parentFile.mkdirs()
-        val fileContent = ClassBuilderPref(roundEnvironment).getContent()
-        file.writeText(fileContent)
-    }
 
     private fun generateInitializerClass(roundEnvironment: Set<Element>) {
         Log.w("PrefInitializer")
 
         val className = "PrefInitializer"
-        val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
         val file = File("$kaptKotlinGeneratedDir/${PACKAGE_NAME.replace('.', '/')}", "$className.kt")
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderInitializer(roundEnvironment).getContent()
@@ -126,7 +115,15 @@ public class AnnotationGenerator : AbstractProcessor() {
         //Log.w(ClassBuilderInitializer.androidManifest)
         //fileAndroidManifest.writeText(ClassBuilderInitializer.androidManifest)
     }
+    private fun generatePrefClass(roundEnvironment: Element) {
+        Log.w(roundEnvironment.toString())
 
+        val className = "$GENERATED_CLASS_PRE_FIX${roundEnvironment.simpleName}"
+        val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "$className.kt")
+        file.parentFile.mkdirs()
+        val fileContent = ClassBuilderPreferences(roundEnvironment).getContent()
+        file.writeText(fileContent)
+    }
 }
 
 fun findAndroidManifestFiles(dir: File, list: MutableSet<File>) {

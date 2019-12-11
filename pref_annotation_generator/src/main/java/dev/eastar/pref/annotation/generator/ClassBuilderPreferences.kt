@@ -1,5 +1,6 @@
 package dev.eastar.pref.annotation.generator
 
+import java.util.*
 import javax.lang.model.element.Element
 
 /**
@@ -8,7 +9,7 @@ import javax.lang.model.element.Element
  * Use KotlinPoet for production app
  * KotlinPoet can be found at https://github.com/square/kotlinpoet
  */
-class ClassBuilderPref(environment: Element) {
+class ClassBuilderPreferences(environment: Element) {
     private val contentTemplate = """
 package ${environment.enclosingElement}
 import android.content.SharedPreferences
@@ -25,7 +26,7 @@ ${environment.enclosedElements
     fun getContent() = contentTemplate
 
     companion object {
-        const val GENERATED_CLASS_PRE_FIX = "Pref"
+
         private val funcTemplate = mapOf(
                 "boolean" to """
     var %s: Boolean
