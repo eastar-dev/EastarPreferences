@@ -1,4 +1,4 @@
-package dev.eastar.sharedpreferences.package2
+package dev.eastar.kapt.sharedpreferences.demo.package2
 
 import dev.eastar.pref.annotation.Pref
 

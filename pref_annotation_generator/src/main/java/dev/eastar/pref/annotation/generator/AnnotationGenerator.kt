@@ -33,8 +33,8 @@ public class AnnotationGenerator : AbstractProcessor() {
 
     override fun init(processingEnvironment: ProcessingEnvironment?) {
         super.init(processingEnvironment)
-        processingEnvironment?.let { Log.processingEnvironment = it }
-
+        Log.processingEnvironment = processingEnv
+        generateInitializerClass(emptySet())
     }
 
     override fun getSupportedSourceVersion(): SourceVersion {
@@ -46,21 +46,14 @@ public class AnnotationGenerator : AbstractProcessor() {
     }
 
     override fun process(set: MutableSet<out TypeElement>?, roundEnvironment: RoundEnvironment?): Boolean {
-        //Log.w("===========================================================")
+        set?.firstOrNull() ?: return true
+        Log.w("0===========================================================")
+        Log.w(set.toString())
         //roundEnvironment
         //        ?.getElementsAnnotatedWith(Pref::class.java)
         //        ?.forEach { Log.environmentTree(it) }
-        //Log.w("===========================================================")
-
-        //runCatching {
-        //    Log.w("AndroidManifest.xml >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        //    val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-        //    Log.w(kaptKotlinGeneratedDir ?: "")
-        //}.onFailure {
-        //    Log.w(it.message ?: it.javaClass.name)
-        //    it.stackTrace.forEach { Log.w(it.toString()) }
-        //}
-        Log.w("===========================================================")
+        manifest()
+        Log.w("1===========================================================")
 
         roundEnvironment
                 ?.getElementsAnnotatedWith(Pref::class.java)
@@ -73,18 +66,53 @@ public class AnnotationGenerator : AbstractProcessor() {
                 ?.let {
                     generateInitializerClass(it)
                 }
+
+        Log.w("2===========================================================")
         return true
     }
 
-    private fun generateInitializerClass(roundEnvironment: Set<Element>) {
-        if (roundEnvironment.isEmpty())
-            return
-
-        roundEnvironment.forEach {
-            Log.w(it.toString())
+    private fun manifest() {
+        val manifests = runCatching {
+            Log.w("AndroidManifest.xml >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+            val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
+            var dir = File(kaptKotlinGeneratedDir)
+            while (dir.name != "build") dir = dir.parentFile
+            Log.w(dir.toString())
+            Log.w("---------------------------------------------")
+            val manifests = mutableSetOf<File>()
+            findAndroidManifestFiles(dir, manifests)
+            manifests
+        }.onFailure {
+            Log.w(it.message ?: it.javaClass.name)
+            it.stackTrace.forEach { Log.w(it.toString()) }
+        }.getOrNull()
+        manifests?.forEach {
+            Log.w("$it")
+            it.
+            it.appendText("\n<!-- hello -->")
         }
+    }
 
-        val className = "${GENERATED_CLASS_PRE_FIX}Initializer"
+    val provider = """        <provider
+            android:name="dev.eastar.sharedpreferences.PrefInitializer"
+            android:authorities="dev.eastar.kapt.sharedpreferences.demo.preference"
+            android:exported="false" />"""
+
+    private fun generatePrefClass(roundEnvironment: Element) {
+        Log.w(roundEnvironment.toString())
+
+        val className = "$GENERATED_CLASS_PRE_FIX${roundEnvironment.simpleName}"
+        val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
+        val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "$className.kt")
+        file.parentFile.mkdirs()
+        val fileContent = ClassBuilderPref(roundEnvironment).getContent()
+        file.writeText(fileContent)
+    }
+
+    private fun generateInitializerClass(roundEnvironment: Set<Element>) {
+        Log.w("PrefInitializer")
+
+        val className = "PrefInitializer"
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
         val file = File("$kaptKotlinGeneratedDir/${PACKAGE_NAME.replace('.', '/')}", "$className.kt")
         file.parentFile.mkdirs()
@@ -97,15 +125,19 @@ public class AnnotationGenerator : AbstractProcessor() {
         //Log.w(result.toString())
         //Log.w(ClassBuilderInitializer.androidManifest)
         //fileAndroidManifest.writeText(ClassBuilderInitializer.androidManifest)
-
     }
 
-    private fun generatePrefClass(roundEnvironment: Element) {
-        val className = "$GENERATED_CLASS_PRE_FIX${roundEnvironment.simpleName}"
-        val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-        val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "$className.kt")
-        file.parentFile.mkdirs()
-        val fileContent = ClassBuilderPref(roundEnvironment).getContent()
-        file.writeText(fileContent)
+}
+
+fun findAndroidManifestFiles(dir: File, list: MutableSet<File>) {
+    val files = dir.listFiles()
+    files ?: return
+
+    dir.listFiles()?.forEach { f ->
+        if (f.isDirectory)
+            findAndroidManifestFiles(f, list)
+        else if (f.name == "AndroidManifest.xml") {
+            list.add(f)
+        }
     }
 }
