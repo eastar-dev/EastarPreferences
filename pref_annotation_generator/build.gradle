@@ -1,15 +1,12 @@
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 
-kapt {
-    generateStubs = true
-}
-
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     compileOnly project(':pref_annotation')
+    api 'androidx.preference:preference-ktx:1.1.0'
 }
 
-sourceCompatibility = "8"
-targetCompatibility = "8"
+//sourceCompatibility = "8"
+//targetCompatibility = "8"
