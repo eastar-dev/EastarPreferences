@@ -20,8 +20,21 @@ import org.w3c.dom.Document
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import java.io.File
-import java.util.*
+import java.io.StringWriter
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerException
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
+import javax.xml.xpath.*
+
+//import javax.xml.parsers.DocumentBuilderFactory
+//import javax.xml.transform.OutputKeys
+//import javax.xml.transform.Transformer
+//import javax.xml.transform.TransformerFactory
+//import javax.xml.transform.dom.DOMSource
+//import javax.xml.transform.stream.StreamResult
 
 /**
  * Custom Kotlin Class Builder which returns file content string
@@ -45,73 +58,71 @@ internal fun generateManifest(kaptKotlinGeneratedDir: String) {
         it.stackTrace.forEach { Log.w(it.toString()) }
     }.getOrNull()
 
-    manifests?.forEach {
-        Log.w("$it")
-        parse(it)
-
-        it.appendText("\n<!-- hello -->")
-    }
+    manifests?.firstOrNull()?.parse()
+    //manifests?.forEach {
+    //    Log.w("$it")
+    //    parse(it)
+    //
+    //    it.appendText("\n<!-- hello -->")
+    //}
 
 }
 
-private fun parse(androidManifestFile: File) {
-    val doc: Document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(androidManifestFile)
+private fun File.parse() {
+    val doc: Document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(this)
     val documentElement = doc.documentElement
     documentElement.normalize()
     val applicationPackage = documentElement.getAttribute("package")
-    var minSdkVersion = -1
-    var maxSdkVersion = -1
-    var targetSdkVersion = -1
-    val sdkNodes = documentElement.getElementsByTagName("uses-sdk")
-    if (sdkNodes.length > 0) {
-        val sdkNode = sdkNodes.item(0)
-        minSdkVersion = extractAttributeIntValue(sdkNode, "android:minSdkVersion", -1)
-        maxSdkVersion = extractAttributeIntValue(sdkNode, "android:maxSdkVersion", -1)
-        targetSdkVersion = extractAttributeIntValue(sdkNode, "android:targetSdkVersion", -1)
-    }
+    Log.w(applicationPackage)
 
     val applicationNodes = documentElement.getElementsByTagName("application")
-    var applicationClassQualifiedName: String? = null
-    var applicationDebuggableMode = false
     if (applicationNodes.length > 0) {
         val applicationNode = applicationNodes.item(0)
         val nameAttribute = applicationNode.attributes.getNamedItem("android:name")
         val debuggableAttribute = applicationNode.attributes.getNamedItem("android:debuggable")
+        Log.w("${applicationNode.toText()}")
     }
+
     val activityNodes = documentElement.getElementsByTagName("activity")
-
     val serviceNodes = documentElement.getElementsByTagName("service")
-
     val receiverNodes = documentElement.getElementsByTagName("receiver")
-
     val providerNodes = documentElement.getElementsByTagName("provider")
-
     val metaDataNodes = documentElement.getElementsByTagName("meta-data")
     val usesPermissionNodes = documentElement.getElementsByTagName("uses-permission")
-    val permissionQualifiedNames: MutableList<String> = ArrayList()
+
 }
 
-private fun extractAttributeIntValue(node: Node, attribute: String, defaultValue: Int): Int {
-    try {
-        val attributes = node.attributes
-        if (attributes.length > 0) {
-            val attributeNode = attributes.getNamedItem(attribute)
-            if (attributeNode != null) {
-                return attributeNode.nodeValue.toInt()
-            }
+fun Node.toText(omitXmlDeclaration: Boolean = true, prettyPrint: Boolean = true): String? {
+    //requireNotNull(node) { "node is null." }
+    return try { // Remove unwanted whitespaces
+        val node = this
+        node.normalize()
+        val xpath: XPath = XPathFactory.newInstance().newXPath()
+        val expr: XPathExpression = xpath.compile("//text()[normalize-space()='']")
+        val nodeList: NodeList = expr.evaluate(node, XPathConstants.NODESET) as NodeList
+        for (i in 0 until nodeList.length) {
+            val nd: Node = nodeList.item(i)
+            nd.parentNode.removeChild(nd)
         }
-    } catch (ignored: NumberFormatException) { // we assume the manifest is well-formed
+        // Create and setup transformer
+        val transformer = TransformerFactory.newInstance().newTransformer()
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8")
+        if (omitXmlDeclaration) {
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
+        }
+        if (prettyPrint) {
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes")
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4")
+        }
+        // Turn the node into a string
+        val writer = StringWriter()
+        transformer.transform(DOMSource(node), StreamResult(writer))
+        writer.toString()
+    } catch (e: TransformerException) {
+        throw RuntimeException(e)
+    } catch (e: XPathExpressionException) {
+        throw RuntimeException(e)
     }
-    return defaultValue
-}
-
-private fun extractComponentNames(applicationPackage: String, componentNodes: NodeList): List<String>? {
-    val componentQualifiedNames: MutableList<String> = ArrayList()
-    for (i in 0 until componentNodes.length) {
-        val activityNode = componentNodes.item(i)
-        val nameAttribute = activityNode.attributes.getNamedItem("android:name")
-    }
-    return componentQualifiedNames
 }
 
 val provider
