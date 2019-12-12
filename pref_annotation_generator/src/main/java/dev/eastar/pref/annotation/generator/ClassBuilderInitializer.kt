@@ -34,7 +34,7 @@ import android.database.Cursor
 import android.net.Uri
 import androidx.preference.PreferenceManager
 
-class ${GENERATED_CLASS_PRE_FIX}Initializer : ContentProvider() {
+class $GENERATED_INITIALIZER_CLASS : ContentProvider() {
     override fun onCreate(): Boolean {
 $preferences
         return true
