@@ -4,5 +4,5 @@ apply plugin: 'kotlin-kapt'
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    compileOnly project(':pref_annotation_internal')
+    compileOnly project(':pref_annotation')
 }
