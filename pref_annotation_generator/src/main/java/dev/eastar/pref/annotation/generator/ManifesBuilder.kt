@@ -17,17 +17,13 @@ package dev.eastar.pref.annotation.generator
 
 import dev.eastar.pref.annotation.util.Log
 import org.w3c.dom.Document
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
 import java.io.File
 import java.io.StringWriter
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
-import javax.xml.transform.TransformerException
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
-import javax.xml.xpath.*
 
 //import javax.xml.parsers.DocumentBuilderFactory
 //import javax.xml.transform.OutputKeys
@@ -70,66 +66,50 @@ internal fun generateManifest(kaptKotlinGeneratedDir: String) {
 
 private fun File.parse() {
     val doc: Document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(this)
+
+    Log.w(doc.toText())
+
     val documentElement = doc.documentElement
     documentElement.normalize()
     val applicationPackage = documentElement.getAttribute("package")
     Log.w(applicationPackage)
 
     val applicationNodes = documentElement.getElementsByTagName("application")
+
     if (applicationNodes.length > 0) {
         val applicationNode = applicationNodes.item(0)
         val nameAttribute = applicationNode.attributes.getNamedItem("android:name")
         val debuggableAttribute = applicationNode.attributes.getNamedItem("android:debuggable")
-        Log.w("${applicationNode.toText()}")
-    }
 
-    val activityNodes = documentElement.getElementsByTagName("activity")
-    val serviceNodes = documentElement.getElementsByTagName("service")
-    val receiverNodes = documentElement.getElementsByTagName("receiver")
-    val providerNodes = documentElement.getElementsByTagName("provider")
-    val metaDataNodes = documentElement.getElementsByTagName("meta-data")
-    val usesPermissionNodes = documentElement.getElementsByTagName("uses-permission")
+        val provider = doc.createElement("provider")
+        provider.setAttribute("android:name", "$PACKAGE_NAME$GENERATED_INITIALIZER_CLASS")
+        provider.setAttribute("android:authorities", "$applicationPackage.preference")
+        provider.setAttribute("android:exported", "false")
+
+        applicationNode.appendChild(provider)
+    }
+    //val activityNodes = documentElement.getElementsByTagName("activity")
+    //val serviceNodes = documentElement.getElementsByTagName("service")
+    //val receiverNodes = documentElement.getElementsByTagName("receiver")
+    //val providerNodes = documentElement.getElementsByTagName("provider")
+    //val metaDataNodes = documentElement.getElementsByTagName("meta-data")
+    //val usesPermissionNodes = documentElement.getElementsByTagName("uses-permission")
+
+    Log.w(doc.toText())
 
 }
 
-fun Node.toText(omitXmlDeclaration: Boolean = true, prettyPrint: Boolean = true): String? {
-    //requireNotNull(node) { "node is null." }
-    return try { // Remove unwanted whitespaces
-        val node = this
-        node.normalize()
-        val xpath: XPath = XPathFactory.newInstance().newXPath()
-        val expr: XPathExpression = xpath.compile("//text()[normalize-space()='']")
-        val nodeList: NodeList = expr.evaluate(node, XPathConstants.NODESET) as NodeList
-        for (i in 0 until nodeList.length) {
-            val nd: Node = nodeList.item(i)
-            nd.parentNode.removeChild(nd)
-        }
-        // Create and setup transformer
-        val transformer = TransformerFactory.newInstance().newTransformer()
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8")
-        if (omitXmlDeclaration) {
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes")
-        }
-        if (prettyPrint) {
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes")
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4")
-        }
-        // Turn the node into a string
-        val writer = StringWriter()
-        transformer.transform(DOMSource(node), StreamResult(writer))
-        writer.toString()
-    } catch (e: TransformerException) {
-        throw RuntimeException(e)
-    } catch (e: XPathExpressionException) {
-        throw RuntimeException(e)
-    }
-}
-
-val provider
-    get() = """        <provider
-            android:name="$GENERATED_INITIALIZER_CLASS"
-            android:authorities="dev.eastar.kapt.sharedpreferences.demo.preference"
-            android:exported="false" />"""
+fun Document.toText(): String = runCatching {
+    val transformer = TransformerFactory.newInstance().newTransformer()
+    transformer.setOutputProperty(OutputKeys.METHOD, "xml")
+    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8")
+    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no")
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes")
+    // Turn the node into a string
+    val writer = StringWriter()
+    transformer.transform(DOMSource(this), StreamResult(writer))
+    writer.toString()
+}.getOrDefault("")
 
 private val contentTemplate = """"""
 fun getContent() = contentTemplate
