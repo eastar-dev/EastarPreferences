@@ -47,11 +47,5 @@ $preferences
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = 0
 }
 """
-
-    val provider get() = """        <provider
-            android:name="$GENERATED_INITIALIZER_CLASS"
-            android:authorities="dev.eastar.kapt.sharedpreferences.demo.preference"
-            android:exported="false" />"""
-
     fun getContent() = contentTemplate
 }

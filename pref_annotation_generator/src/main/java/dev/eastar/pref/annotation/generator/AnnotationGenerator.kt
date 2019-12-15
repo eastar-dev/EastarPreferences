@@ -50,25 +50,17 @@ public class AnnotationGenerator : AbstractProcessor() {
     override fun process(set: MutableSet<out TypeElement>?, roundEnvironment: RoundEnvironment?): Boolean {
         set?.firstOrNull() ?: return true
         Log.w("0===========================================================")
-        Log.w(set.toString())
-        //roundEnvironment
-        //        ?.getElementsAnnotatedWith(Pref::class.java)
-        //        ?.forEach { Log.environmentTree(it) }
-        Log.w("1===========================================================")
         roundEnvironment
                 ?.getElementsAnnotatedWith(Pref::class.java)
                 ?.forEach {
                     generatePrefClass(it)
                 }
-
+        Log.w("1===========================================================")
         roundEnvironment
                 ?.getElementsAnnotatedWith(Pref::class.java)
                 ?.let {
                     generateInitializerClass(it)
                 }
-
-        generateManifest(kaptKotlinGeneratedDir)
-
         Log.w("2===========================================================")
         return true
     }
@@ -89,18 +81,5 @@ public class AnnotationGenerator : AbstractProcessor() {
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderPreferences(roundEnvironment).getContent()
         file.writeText(fileContent)
-    }
-}
-
-fun findAndroidManifestFiles(dir: File, list: MutableSet<File>) {
-    val files = dir.listFiles()
-    files ?: return
-
-    dir.listFiles()?.forEach { f ->
-        if (f.isDirectory)
-            findAndroidManifestFiles(f, list)
-        else if (f.name == "AndroidManifest.xml") {
-            list.add(f)
-        }
     }
 }
