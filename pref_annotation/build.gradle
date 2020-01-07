@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.djrain'
 
 android {
     compileSdkVersion 29
@@ -12,5 +14,6 @@ android {
 
 dependencies {
     api project(':pref_annotation_internal')
+    api project(':pref_annotation_generator')
     api 'androidx.preference:preference-ktx:1.1.0'
 }
