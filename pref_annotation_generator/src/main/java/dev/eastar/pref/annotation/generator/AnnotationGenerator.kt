@@ -37,6 +37,7 @@ public class AnnotationGenerator : AbstractProcessor() {
         super.init(processingEnvironment)
         Log.processingEnvironment = processingEnv
         kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]!!
+        generateInitializerClass(emptySet())
     }
 
     override fun getSupportedSourceVersion(): SourceVersion {
