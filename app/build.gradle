@@ -40,10 +40,12 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-//    implementation 'com.github.djrain:EastarSharedPreferencesLoveInEnum:-SNAPSHOT'
-//    kapt 'com.github.djrain:EastarSharedPreferencesLoveInEnum:-SNAPSHOT'
-    implementation project(':pref_annotation')
-    kapt project(':pref_annotation_generator')
+    implementation 'com.github.djrain:EastarSharedPreferencesLoveInEnum:-SNAPSHOT'
+    kapt 'com.github.djrain:EastarSharedPreferencesLoveInEnum:-SNAPSHOT'
+
+//    implementation project(':pref_annotation')
+//    kapt project(':pref_annotation_generator')
+
 }
 
 tasks.whenTaskAdded { task ->
