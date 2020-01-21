@@ -1,6 +1,5 @@
 package dev.eastar.pref.annotation.generator
 
-import java.util.*
 import javax.lang.model.element.Element
 
 /**
@@ -14,7 +13,7 @@ class ClassBuilderPreferences(environment: Element) {
 package ${environment.enclosingElement}
 import android.content.SharedPreferences
 
-object $GENERATED_CLASS_PRE_FIX${environment.simpleName}{
+object ${environment.simpleName}$GENERATED_CLASS_TAIL_FIX{
     lateinit var preferences: SharedPreferences
 ${environment.enclosedElements
             .map { it.asType().toString().substring(2) to it.simpleName.substring(3) }

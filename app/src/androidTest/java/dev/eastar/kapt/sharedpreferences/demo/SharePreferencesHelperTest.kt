@@ -1,7 +1,6 @@
 package dev.eastar.kapt.sharedpreferences.demo
 
 import android.content.Context
-import androidx.core.content.edit
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.hamcrest.Matchers

@@ -14,7 +14,7 @@ class ClassBuilderInitializer(environments: Set<Element>) {
     private val preferences =
             environments.joinToString("\n") {
                 val ann = it.getAnnotation(Pref::class.java)
-                """        ${it.enclosingElement}.$GENERATED_CLASS_PRE_FIX${it.simpleName}.preferences = """ + when {
+                """        ${it.enclosingElement}.${it.simpleName}$GENERATED_CLASS_TAIL_FIX.preferences = """ + when {
                     ann.defaultSharedPreferences ->
                         """androidx.preference.PreferenceManager.getDefaultSharedPreferences(context!!)"""
                     ann.value.isNotBlank() ->

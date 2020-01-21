@@ -3,7 +3,7 @@
 
     <application>
         <provider
-            android:name="dev.eastar.sharedpreferences.GeneratedInitializerClass"
+            android:name="dev.eastar.sharedpreferences.PrefInitializerProvider"
             android:authorities="${applicationId}.preference"
             android:exported="false" />
     </application>

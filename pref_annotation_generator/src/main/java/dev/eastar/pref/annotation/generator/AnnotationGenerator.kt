@@ -17,16 +17,11 @@ package dev.eastar.pref.annotation.generator
 
 import dev.eastar.pref.annotation.Pref
 import dev.eastar.pref.annotation.util.Log
-import org.w3c.dom.Document
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
 import java.io.File
-import java.util.*
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
-import javax.xml.parsers.DocumentBuilderFactory
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8) // to support Java 8
 @SupportedOptions(KAPT_KOTLIN_GENERATED_OPTION_NAME)
@@ -50,25 +45,24 @@ public class AnnotationGenerator : AbstractProcessor() {
 
     override fun process(set: MutableSet<out TypeElement>?, roundEnvironment: RoundEnvironment?): Boolean {
         set?.firstOrNull() ?: return true
-        Log.w("0===========================================================")
+        //Log.w("0===========================================================")
         roundEnvironment
                 ?.getElementsAnnotatedWith(Pref::class.java)
                 ?.forEach {
                     generatePrefClass(it)
                 }
-        Log.w("1===========================================================")
+        //Log.w("1===========================================================")
         roundEnvironment
                 ?.getElementsAnnotatedWith(Pref::class.java)
                 ?.let {
                     generateInitializerClass(it)
                 }
-        Log.w("2===========================================================")
+        //Log.w("2===========================================================")
         return true
     }
 
-
     private fun generateInitializerClass(roundEnvironment: Set<Element>) {
-        Log.w("$GENERATED_INITIALIZER_CLASS")
+        Log.w("Generate Initializer Class : [$GENERATED_INITIALIZER_CLASS]")
         val file = File("$kaptKotlinGeneratedDir/${PACKAGE_NAME.replace('.', '/')}", "$GENERATED_INITIALIZER_CLASS.kt")
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderInitializer(roundEnvironment).getContent()
@@ -76,9 +70,8 @@ public class AnnotationGenerator : AbstractProcessor() {
     }
 
     private fun generatePrefClass(roundEnvironment: Element) {
-        Log.w(roundEnvironment.toString())
-        val className = "$GENERATED_CLASS_PRE_FIX${roundEnvironment.simpleName}"
-        val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "$className.kt")
+        Log.w("Generate Pref Class : [${roundEnvironment.simpleName}$GENERATED_CLASS_TAIL_FIX]")
+        val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "${roundEnvironment.simpleName}$GENERATED_CLASS_TAIL_FIX.kt")
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderPreferences(roundEnvironment).getContent()
         file.writeText(fileContent)
