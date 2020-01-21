@@ -1,5 +1,6 @@
 package dev.eastar.pref.annotation.generator
 
+import java.util.*
 import javax.lang.model.element.Element
 
 /**
@@ -8,6 +9,7 @@ import javax.lang.model.element.Element
  * Use KotlinPoet for production app
  * KotlinPoet can be found at https://github.com/square/kotlinpoet
  */
+@ExperimentalStdlibApi
 class ClassBuilderPreferences(environment: Element) {
     private val contentTemplate = """
 package ${environment.enclosingElement}
@@ -17,7 +19,7 @@ object ${environment.simpleName}$GENERATED_CLASS_TAIL_FIX {
     lateinit var preferences: SharedPreferences
 ${environment.enclosedElements
             .map { it.asType().toString().substring(2) to it.simpleName.substring(3) }
-            .mapNotNull { funcTemplate[it.first]?.format(it.second.decapitalize(), it.second.decapitalize(), it.second.decapitalize(), it.second.capitalize(), it.second.decapitalize()) }
+            .mapNotNull { funcTemplate[it.first]?.format(it.second.camel, it.second, it.second, it.second.camel.capitalize(Locale.ENGLISH), it.second) }
             .joinToString("\n")}
 }
 """
@@ -69,6 +71,17 @@ ${environment.enclosedElements
 """
         )
     }
+
+    private val String.camel: String
+        get() =
+            when {
+                contains('_') ->
+                    split('_').joinToString("") { it.toLowerCase(Locale.ENGLISH).capitalize(Locale.ENGLISH) }.decapitalize(Locale.ENGLISH)
+                filterNot { it.isDigit() || it.isUpperCase() }.count() <= 0 ->
+                    toLowerCase(Locale.ENGLISH)
+                else ->
+                    decapitalize(Locale.ENGLISH)
+            }
 }
 
 

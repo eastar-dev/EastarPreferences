@@ -69,8 +69,18 @@ public class AnnotationGenerator : AbstractProcessor() {
         file.writeText(fileContent)
     }
 
+    @UseExperimental(ExperimentalStdlibApi::class)
     private fun generatePrefClass(roundEnvironment: Element) {
         Log.w("Generate Pref Class : [${roundEnvironment.simpleName}$GENERATED_CLASS_TAIL_FIX]")
+
+        Log.w(roundEnvironment.simpleName)
+        Log.w(roundEnvironment.enclosingElement.simpleName)
+        Log.w(roundEnvironment.annotationMirrors.joinToString ())
+        Log.w(""+roundEnvironment.enclosedElements.size)
+        Log.w(""+roundEnvironment.enclosedElements.joinToString())
+        Log.w(roundEnvironment.toString())
+
+
         val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "${roundEnvironment.simpleName}$GENERATED_CLASS_TAIL_FIX.kt")
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderPreferences(roundEnvironment).getContent()
