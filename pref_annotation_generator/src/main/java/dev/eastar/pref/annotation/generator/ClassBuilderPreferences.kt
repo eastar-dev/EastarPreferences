@@ -13,7 +13,7 @@ class ClassBuilderPreferences(environment: Element) {
 package ${environment.enclosingElement}
 import android.content.SharedPreferences
 
-object ${environment.simpleName}$GENERATED_CLASS_TAIL_FIX{
+object ${environment.simpleName}$GENERATED_CLASS_TAIL_FIX {
     lateinit var preferences: SharedPreferences
 ${environment.enclosedElements
             .map { it.asType().toString().substring(2) to it.simpleName.substring(3) }
@@ -28,46 +28,44 @@ ${environment.enclosedElements
 
         private val funcTemplate = mapOf(
                 "boolean" to """
-    var %s: Boolean
+    @JvmStatic var %s: Boolean
         set(value) = preferences.edit().putBoolean("%s", value).apply()
         get() = preferences.getBoolean("%s", false)
-
-    fun get%s(defValue: Boolean = false) = preferences.getBoolean("%s", defValue)
+    @JvmStatic fun get%s(defValue: Boolean = false) = preferences.getBoolean("%s", defValue)
 """,
                 "int" to """
-    var %s: Int
+    @JvmStatic var %s: Int
         set(value) = preferences.edit().putInt("%s", value).apply()
         get() = preferences.getInt("%s", -1)
-
-    fun get%s(defValue: Int = -1) = preferences.getInt("%s", defValue)
+    @JvmStatic fun get%s(defValue: Int = -1) = preferences.getInt("%s", defValue)
 """,
                 "float" to """
-    var %s: Float
+    @JvmStatic var %s: Float
         get() = preferences.getFloat("%s", -1F)
         set(value) = preferences.edit().putFloat("%s", value).apply()
 
-    fun get%s(defValue: Float = -1F) = preferences.getFloat("%s", defValue)
+    @JvmStatic fun get%s(defValue: Float = -1F) = preferences.getFloat("%s", defValue)
 """,
                 "long" to """
-    var %s: Long
+    @JvmStatic var %s: Long
         get() = preferences.getLong("%s", -1L)
         set(value) = preferences.edit().putLong("%s", value).apply()
 
-    fun get%s(defValue: Long = -1L) = preferences.getLong("%s", defValue)
+    @JvmStatic fun get%s(defValue: Long = -1L) = preferences.getLong("%s", defValue)
 """,
                 "java.lang.String" to """
-    var %s: String
+    @JvmStatic var %s: String
         get() = preferences.getString("%s", "")!!
         set(value) = preferences.edit().putString("%s", value).apply()
 
-    fun get%s(defValue: String = "") = preferences.getString("%s", defValue)!!
+    @JvmStatic fun get%s(defValue: String = "") = preferences.getString("%s", defValue)!!
 """,
                 "java.util.Set<java.lang.String>" to """
-    var %s: Set<String>
+    @JvmStatic var %s: Set<String>
         get() = preferences.getStringSet("%s", emptySet())!!
         set(value) = preferences.edit().putStringSet("%s", value).apply()
 
-    fun get%s(defValue: Set<String> = emptySet()) = preferences.getStringSet("%s", defValue)!!
+    @JvmStatic fun get%s(defValue: Set<String> = emptySet()) = preferences.getStringSet("%s", defValue)!!
 """
         )
     }
