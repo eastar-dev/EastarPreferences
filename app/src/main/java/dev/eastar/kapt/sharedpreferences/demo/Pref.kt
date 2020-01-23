@@ -32,8 +32,6 @@ interface TestSample {
     val TEST_LONG: Long
     val TEST_STRING: String
     val TEST_SET: Set<String>
-
-    var app_debug : Int
 }
 
 //@Pref

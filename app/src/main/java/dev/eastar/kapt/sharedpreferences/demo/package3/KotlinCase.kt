@@ -3,7 +3,7 @@ package dev.eastar.kapt.sharedpreferences.demo.package3
 import dev.eastar.pref.annotation.Pref
 
 @Pref
-interface TestPackage3Class2 {
+interface TestKotlinInterfaceCompanionObject {
     companion object {
         const val package3Class2Value1 = false
         const val Package3Class2Value2 = 10
@@ -11,7 +11,7 @@ interface TestPackage3Class2 {
 }
 
 @Pref
-class TestPackage3Class2_3 {
+class TestKotlinClassCompanionObject {
     companion object {
         const val package3Class2Value1 = false
         const val Package3Class2Value2 = 10
@@ -19,17 +19,33 @@ class TestPackage3Class2_3 {
 }
 
 @Pref
-data class TestPackage3Class2_4(val package3Class2Value1: Boolean = false,
-                                val Package3Class2Value2: Int = 10)
+data class TestKotlinDataClass(val package3Class2Value1: Boolean = false,
+                               val Package3Class2Value2: Int = 10)
 
 @Pref
-class TestPackage3Class2_5 {
+class TestKotlinClass {
     val package3Class2Value1 = false
     val Package3Class2Value2 = 10
 }
 
 @Pref
-interface TestPackage3Class2_2 {
+data class TestKotlinDataClassVar(var package3Class2Value1: Boolean = false,
+                                  var Package3Class2Value2: Int = 10)
+
+@Pref
+class TestKotlinClassVar {
+    var package3Class2Value1 = false
+    var Package3Class2Value2 = 10
+}
+
+@Pref
+interface TestKotlinInterface {
     val package3Class2Value1: Boolean
     val Package3Class2Value2: Int
+}
+
+@Pref
+interface TestKotlinInterfaceVar {
+    var package3Class2Value1: Boolean
+    var Package3Class2Value2: Int
 }

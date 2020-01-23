@@ -1,6 +1,7 @@
 package dev.eastar.pref.annotation.generator
 
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_CLASS_TAIL_FIX
+import dev.eastar.pref.annotation.util.Log
 import java.util.*
 import javax.lang.model.element.Element
 
@@ -11,14 +12,37 @@ import javax.lang.model.element.Element
  * KotlinPoet can be found at https://github.com/square/kotlinpoet
  */
 @ExperimentalStdlibApi
-class ClassBuilderPreferences(environment: Element) {
+class ClassBuilderPreferences(val element: Element) {
+    init {
+        Log.w("Generate Pref Class : [${element.simpleName}$GENERATED_CLASS_TAIL_FIX]")
+        var keys = element.enclosedElements
+                .filter { it.kind.isField }
+                .filterNot { it.simpleName.toString() == "Companion" }
+                .map { it.asType().toString() to it.simpleName.toString() }
+        if (keys.isEmpty()) {
+            val typeMap = element.enclosedElements
+                    .filter { it.simpleName.startsWith("get")}
+                    .map { it.simpleName to it.asType().toString() }.toMap()
+
+            keys = element.getAnnotation(Metadata::class.java).data2
+                    .filterNot { it.isBlank() }
+                    .filterNot { it.contains('(') && it.contains(')') }
+                    .filterNot { it.startsWith("get") }
+                    .filterNot { it.startsWith("set") }
+                    .drop(1)
+                    .dropLast(1)
+                    .map { "ss" to it }
+        }
+        keys.forEach { Log.w(it.toString()) }
+    }
+
     private val contentTemplate = """
-package ${environment.enclosingElement}
+package ${element.enclosingElement}
 import android.content.SharedPreferences
 
-object ${environment.simpleName}$GENERATED_CLASS_TAIL_FIX {
+object ${element.simpleName}$GENERATED_CLASS_TAIL_FIX {
     lateinit var preferences: SharedPreferences
-${environment.enclosedElements
+${element.enclosedElements
             .map { it.asType().toString().substring(2) to it.simpleName.substring(3) }
             .mapNotNull { funcTemplate[it.first]?.format(it.second.camel, it.second, it.second, it.second.camel.capitalize(Locale.ENGLISH), it.second) }
             .joinToString("\n")}
