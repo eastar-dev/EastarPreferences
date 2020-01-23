@@ -16,6 +16,10 @@
 package dev.eastar.pref.annotation.generator
 
 import dev.eastar.pref.annotation.Pref
+import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_CLASS_TAIL_FIX
+import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_INITIALIZER_CLASS
+import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
+import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.PACKAGE_NAME
 import dev.eastar.pref.annotation.util.Log
 import java.io.File
 import javax.annotation.processing.*
@@ -72,15 +76,10 @@ public class AnnotationGenerator : AbstractProcessor() {
     @UseExperimental(ExperimentalStdlibApi::class)
     private fun generatePrefClass(roundEnvironment: Element) {
         Log.w("Generate Pref Class : [${roundEnvironment.simpleName}$GENERATED_CLASS_TAIL_FIX]")
-
-        Log.w(roundEnvironment.simpleName)
-        Log.w(roundEnvironment.enclosingElement.simpleName)
-        Log.w(roundEnvironment.annotationMirrors.joinToString ())
-        Log.w(""+roundEnvironment.enclosedElements.size)
-        Log.w(""+roundEnvironment.enclosedElements.joinToString())
-        Log.w(roundEnvironment.toString())
-
-
+        Log.w("요기=============================================================")
+        roundEnvironment.enclosedElements
+                .filter { it.kind.isField}
+                .forEach { Log.w(it.simpleName.toString() + ","+ it.kind.toString()) }
         val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "${roundEnvironment.simpleName}$GENERATED_CLASS_TAIL_FIX.kt")
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderPreferences(roundEnvironment).getContent()

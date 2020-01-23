@@ -1,6 +1,9 @@
 package dev.eastar.pref.annotation.generator
 
 import dev.eastar.pref.annotation.Pref
+import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_CLASS_TAIL_FIX
+import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_INITIALIZER_CLASS
+import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.PACKAGE_NAME
 import javax.lang.model.element.Element
 
 /**
