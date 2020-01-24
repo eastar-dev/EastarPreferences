@@ -22,7 +22,8 @@ class ClassBuilderPreferences(val element: Element) {
         if (keys.isEmpty()) {
             val typeMap = element.enclosedElements
                     .filter { it.simpleName.startsWith("get")}
-                    .map { it.simpleName to it.asType().toString() }.toMap()
+                    .map { it.simpleName.toString() to it.asType().toString() }.toMap()
+            Log.w(typeMap.toString())
 
             keys = element.getAnnotation(Metadata::class.java).data2
                     .filterNot { it.isBlank() }
@@ -31,7 +32,7 @@ class ClassBuilderPreferences(val element: Element) {
                     .filterNot { it.startsWith("set") }
                     .drop(1)
                     .dropLast(1)
-                    .map { "ss" to it }
+                    .map { (typeMap["get${it.capitalize(Locale.ENGLISH)}"]?.substring(2) ?: "") to it   }
         }
         keys.forEach { Log.w(it.toString()) }
     }
