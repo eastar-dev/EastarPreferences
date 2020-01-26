@@ -19,9 +19,21 @@ class ClassBuilderPreferences(element: Element) {
     init {
         Log.w("Generate Pref Class : [${element.simpleName}$GENERATED_CLASS_TAIL_FIX]")
 
-        val values = element.enclosedElements
+        //element.enclosedElements
+        //        .filter { it.kind.isField }
+        //        .forEach {
+        //            Log.w(it.simpleName)
+        //            if (it is VariableElement)
+        //                Log.w(it.constantValue?.toString() ?: "null?")
+        //                //Log.w(it.constantValue?.toString() ?: "null?")
+        //        }
+        element.enclosedElements
                 .filter { it.kind.isField }
-        values.forEach { Log.w( ((it as VariableElement).constantValue).toString() ) }
+                .filterNot { it.simpleName.toString() == "Companion" }
+                .forEach {
+                    if (it is VariableElement)
+                        Log.w("${it.constantValue}")
+                }
 
         keys = element.enclosedElements
                 .filter { it.kind.isField }

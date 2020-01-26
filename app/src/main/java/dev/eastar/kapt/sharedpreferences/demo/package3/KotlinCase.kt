@@ -1,3 +1,5 @@
+import dev.eastar.pref.annotation.Pref
+
 //package dev.eastar.kapt.sharedpreferences.demo.package3
 //
 //import dev.eastar.pref.annotation.Pref
@@ -32,11 +34,15 @@
 //data class TestKotlinDataClassVar(var package3Class2Value1: Boolean = false,
 //                                  var Package3Class2Value2: Int = 10)
 //
-//@Pref
-//class TestKotlinClassVar {
-//    var package3Class2Value1 = false
-//    var Package3Class2Value2 = 10
-//}
+@Pref
+class TestKotlinClassVar {
+    @JvmField
+    var testKotlinClassVarBoolean = true
+    var testKotlinClassVarInt = Int.MAX_VALUE
+    var testKotlinClassVarLong = Long.MAX_VALUE
+    var testKotlinClassVarString = "I am string"
+    var testKotlinClassVarStringSet  = setOf<String>("I am string","one","tow","three")
+}
 //
 //@Pref
 //interface TestKotlinInterface {
