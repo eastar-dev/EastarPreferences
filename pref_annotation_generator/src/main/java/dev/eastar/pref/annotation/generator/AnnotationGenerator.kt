@@ -66,7 +66,6 @@ public class AnnotationGenerator : AbstractProcessor() {
     }
 
     private fun generateInitializerClass(roundEnvironment: Set<Element>) {
-        Log.w("Generate Initializer Class : [$GENERATED_INITIALIZER_CLASS]")
         val file = File("$kaptKotlinGeneratedDir/${PACKAGE_NAME.replace('.', '/')}", "$GENERATED_INITIALIZER_CLASS.kt")
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderInitializer(roundEnvironment).getContent()

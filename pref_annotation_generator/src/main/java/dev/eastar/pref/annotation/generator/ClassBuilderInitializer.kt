@@ -4,6 +4,7 @@ import dev.eastar.pref.annotation.Pref
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_CLASS_TAIL_FIX
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_INITIALIZER_CLASS
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.PACKAGE_NAME
+import dev.eastar.pref.annotation.util.Log
 import javax.lang.model.element.Element
 
 /**
@@ -13,7 +14,9 @@ import javax.lang.model.element.Element
  * KotlinPoet can be found at https://github.com/square/kotlinpoet
  */
 class ClassBuilderInitializer(environments: Set<Element>) {
-
+    init {
+        Log.w("Generate Initializer Class : [$GENERATED_INITIALIZER_CLASS]")
+    }
     private val preferences =
             environments.joinToString("\n") {
                 val ann = it.getAnnotation(Pref::class.java)
