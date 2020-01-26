@@ -8,7 +8,7 @@ class TestJavaClass {
     int Package3Class3Value2 = 10;
 }
 
-//@Pref
+@Pref
 interface TestJavaInterface {
     boolean package3Class1Value1 = false;
     int Package3Class1Value2 = 10;

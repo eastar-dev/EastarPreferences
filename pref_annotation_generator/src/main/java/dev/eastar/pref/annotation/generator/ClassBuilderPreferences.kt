@@ -4,6 +4,7 @@ import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_
 import dev.eastar.pref.annotation.util.Log
 import java.util.*
 import javax.lang.model.element.Element
+import javax.lang.model.element.VariableElement
 
 /**
  * Custom Kotlin Class Builder which returns file content string
@@ -14,12 +15,20 @@ import javax.lang.model.element.Element
 @ExperimentalStdlibApi
 class ClassBuilderPreferences(element: Element) {
     private var keys: List<Pair<String, String>>
+
     init {
         Log.w("Generate Pref Class : [${element.simpleName}$GENERATED_CLASS_TAIL_FIX]")
+
+        val values = element.enclosedElements
+                .filter { it.kind.isField }
+        values.forEach { Log.w( ((it as VariableElement).constantValue).toString() ) }
+
         keys = element.enclosedElements
                 .filter { it.kind.isField }
                 .filterNot { it.simpleName.toString() == "Companion" }
                 .map { it.asType().toString() to it.simpleName.toString() }
+
+
         if (keys.isEmpty()) {
             val typeMap = element.enclosedElements
                     .filter { it.simpleName.startsWith("get") }
@@ -34,7 +43,8 @@ class ClassBuilderPreferences(element: Element) {
                     .dropLast(1)
                     .map { (typeMap["get${it.capitalize(Locale.ENGLISH)}"]?.substring(2) ?: "") to it }
         }
-        //keys.forEach { Log.w(it.toString()) }
+
+        keys.forEach { Log.w(it.toString()) }
     }
 
     private val contentTemplate = """
