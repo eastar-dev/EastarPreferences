@@ -4,7 +4,6 @@ import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_
 import dev.eastar.pref.annotation.util.Log
 import java.util.*
 import javax.lang.model.element.Element
-import javax.lang.model.element.VariableElement
 
 /**
  * Custom Kotlin Class Builder which returns file content string
@@ -27,13 +26,13 @@ class ClassBuilderPreferences(element: Element) {
         //                Log.w(it.constantValue?.toString() ?: "null?")
         //                //Log.w(it.constantValue?.toString() ?: "null?")
         //        }
-        element.enclosedElements
-                .filter { it.kind.isField }
-                .filterNot { it.simpleName.toString() == "Companion" }
-                .forEach {
-                    if (it is VariableElement)
-                        Log.w("${it.constantValue}")
-                }
+        //element.enclosedElements
+        //        .filter { it.kind.isField }
+        //        .filterNot { it.simpleName.toString() == "Companion" }
+        //        .forEach {
+        //            if (it is VariableElement)
+        //                Log.w("${it.constantValue}")
+        //        }
 
         keys = element.enclosedElements
                 .filter { it.kind.isField }
