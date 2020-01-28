@@ -17,7 +17,7 @@ package dev.eastar.kapt.sharedpreferences.demo
 
 import dev.eastar.pref.annotation.Pref
 
-//@Pref
+@Pref
 interface TestSample {
     val TEST_EMPTY_BOOLEAN: Boolean
     val TEST_EMPTY_INT: Int
@@ -34,7 +34,7 @@ interface TestSample {
     val TEST_SET: Set<String>
 }
 
-//@Pref
+@Pref
 interface TestSample2 {
     val TEST_BOOLEAN: Boolean
     val TEST_INT: Int
