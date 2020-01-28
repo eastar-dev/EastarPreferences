@@ -36,7 +36,7 @@ class ClassBuilderInitializer(environments: Set<Element>) {
 
             """        $packageName.$className$GENERATED_CLASS_TAIL_FIX.preferences = $preferenceName"""
         }
-        Log.w(preferences)
+        //Log.w(preferences)
     }
 
     private val contentTemplate = """
