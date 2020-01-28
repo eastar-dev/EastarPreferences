@@ -14,21 +14,30 @@ import javax.lang.model.element.Element
  * KotlinPoet can be found at https://github.com/square/kotlinpoet
  */
 class ClassBuilderInitializer(environments: Set<Element>) {
+    private var preferences: String
+
     init {
         Log.w("Generate Initializer Class : [$GENERATED_INITIALIZER_CLASS]")
-    }
-    private val preferences =
-            environments.joinToString("\n") {
-                val ann = it.getAnnotation(Pref::class.java)
-                """        ${it.enclosingElement}.${it.simpleName}$GENERATED_CLASS_TAIL_FIX.preferences = """ + when {
-                    ann.defaultSharedPreferences ->
-                        """androidx.preference.PreferenceManager.getDefaultSharedPreferences(context!!)"""
-                    ann.value.isNotBlank() ->
-                        """context?.getSharedPreferences("${ann.value}", Context.MODE_PRIVATE)!!"""
-                    else ->
-                        """context?.getSharedPreferences("$it", Context.MODE_PRIVATE)!!"""
-                }
+        preferences = environments.joinToString("\n") {
+            val ann = it.getAnnotation(Pref::class.java)
+            var packageName = it.enclosingElement.toString()
+            if (packageName == "unnamed package")
+                packageName = "unnamed"
+            val className = it.simpleName
+
+            val preferenceName = when {
+                ann.defaultSharedPreferences ->
+                    """androidx.preference.PreferenceManager.getDefaultSharedPreferences(context!!)"""
+                ann.value.isNotBlank() ->
+                    """context?.getSharedPreferences("${ann.value}", Context.MODE_PRIVATE)!!"""
+                else ->
+                    """context?.getSharedPreferences("$it", Context.MODE_PRIVATE)!!"""
             }
+
+            """        $packageName.$className$GENERATED_CLASS_TAIL_FIX.preferences = $preferenceName"""
+        }
+        //Log.w(preferences)
+    }
 
     private val contentTemplate = """
 package $PACKAGE_NAME
@@ -53,5 +62,6 @@ $preferences
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = 0
 }
 """
+
     fun getContent() = contentTemplate
 }
