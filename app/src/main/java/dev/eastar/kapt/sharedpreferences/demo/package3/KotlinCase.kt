@@ -29,8 +29,8 @@ class TestKotlinClass {
 }
 
 @Pref
-data class TestKotlinDataClassVar(var package3Class2Value1: Boolean = false,
-                                  var Package3Class2Value2: Int = 10)
+data class TestKotlinDataClassVar(var package3Class2Value1: Boolean,
+                                  var Package3Class2Value2: Int )
 
 @Pref
 class TestKotlinClassVar {
