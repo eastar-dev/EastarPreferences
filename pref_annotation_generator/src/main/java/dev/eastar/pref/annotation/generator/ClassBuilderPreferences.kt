@@ -105,14 +105,14 @@ ${keys.mapNotNull { funcTemplate[it.first]?.format(it.second.camel, it.second, i
         get() = preferences.getString("%s", "")!!
         set(value) = preferences.edit().putString("%s", value).apply()
 
-    @JvmStatic fun get%s(defValue: String = "") = preferences.getString("%s", defValue)!!
+    @JvmStatic fun get%s(defValue: String? = "") = preferences.getString("%s", defValue)
 """,
                 "java.util.Set<java.lang.String>" to """
     @JvmStatic var %s: Set<String>
         get() = preferences.getStringSet("%s", emptySet())!!
         set(value) = preferences.edit().putStringSet("%s", value).apply()
 
-    @JvmStatic fun get%s(defValue: Set<String> = emptySet()) = preferences.getStringSet("%s", defValue)!!
+    @JvmStatic fun get%s(defValue: Set<String>? = emptySet()) = preferences.getStringSet("%s", defValue)
 """
         )
     }
