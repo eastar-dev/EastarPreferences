@@ -16,7 +16,7 @@
 package dev.eastar.pref.annotation.generator
 
 import dev.eastar.pref.annotation.Pref
-import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_CLASS_TAIL_FIX
+import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.CLASS_TAIL
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_INITIALIZER_CLASS
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.KAPT_KOTLIN_GENERATED_OPTION_NAME
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.PACKAGE_NAME
@@ -52,12 +52,22 @@ public class AnnotationGenerator : AbstractProcessor() {
         //Log.w("0===========================================================")
         roundEnvironment
                 ?.getElementsAnnotatedWith(Pref::class.java)
+                ?.filterNot { it.simpleName.endsWith(CLASS_TAIL) }
+                ?.forEach {
+                    Log.w("${it.simpleName} !!@Pref annotation must suffix $CLASS_TAIL")
+                }
+
+        roundEnvironment
+                ?.getElementsAnnotatedWith(Pref::class.java)
+                ?.filter { it.simpleName.endsWith(CLASS_TAIL) }
                 ?.forEach {
                     generatePrefClass(it)
                 }
         //Log.w("1===========================================================")
         roundEnvironment
                 ?.getElementsAnnotatedWith(Pref::class.java)
+                ?.filter { it.simpleName.endsWith(CLASS_TAIL) }
+                ?.toSet()
                 ?.let {
                     generateInitializerClass(it)
                 }
@@ -74,7 +84,7 @@ public class AnnotationGenerator : AbstractProcessor() {
 
     @UseExperimental(ExperimentalStdlibApi::class)
     private fun generatePrefClass(roundEnvironment: Element) {
-        val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "${roundEnvironment.simpleName}$GENERATED_CLASS_TAIL_FIX.kt")
+        val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "${roundEnvironment.simpleName.removeSuffix(CLASS_TAIL)}.kt")
         file.parentFile.mkdirs()
         val fileContent = ClassBuilderPreferences(roundEnvironment).getContent()
         file.writeText(fileContent)

@@ -1,6 +1,5 @@
 package dev.eastar.pref.annotation.generator
 
-import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_CLASS_TAIL_FIX
 import dev.eastar.pref.annotation.util.Log
 import java.util.*
 import javax.lang.model.element.Element
@@ -16,7 +15,7 @@ class ClassBuilderPreferences(element: Element) {
     private var keys: List<Pair<String, String>>
 
     init {
-        Log.w("Generate Pref Class : [${element.simpleName}$GENERATED_CLASS_TAIL_FIX]")
+        Log.w("Generate Pref Class : [${element.simpleName.removeSuffix(AnnotationConst.CLASS_TAIL)}]")
 
         //element.enclosedElements
         //        .filter { it.kind.isField }
@@ -62,7 +61,7 @@ class ClassBuilderPreferences(element: Element) {
 package ${element.enclosingElement}
 import android.content.SharedPreferences
 
-object ${element.simpleName}$GENERATED_CLASS_TAIL_FIX {
+object ${element.simpleName.removeSuffix(AnnotationConst.CLASS_TAIL)} {
     lateinit var preferences: SharedPreferences
 ${keys.mapNotNull { funcTemplate[it.first]?.format(it.second.camel, it.second, it.second, it.second.camel.capitalize(Locale.ENGLISH), it.second) }
             .joinToString("\n")}

@@ -1,7 +1,7 @@
 package dev.eastar.pref.annotation.generator
 
 import dev.eastar.pref.annotation.Pref
-import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_CLASS_TAIL_FIX
+import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.CLASS_TAIL
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_INITIALIZER_CLASS
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.PACKAGE_NAME
 import dev.eastar.pref.annotation.util.Log
@@ -19,11 +19,17 @@ class ClassBuilderInitializer(environments: Set<Element>) {
     init {
         Log.w("Generate Initializer Class : [$GENERATED_INITIALIZER_CLASS]")
         preferences = environments.joinToString("\n") {
+            //if(!it.simpleName.endsWith(CLASS_TAIL))
+            //    return@joinToString ""
+
+            val className = it.simpleName.removeSuffix(CLASS_TAIL)
+
             val ann = it.getAnnotation(Pref::class.java)
+
             var packageName = it.enclosingElement.toString()
             if (packageName == "unnamed package")
                 packageName = "unnamed"
-            val className = it.simpleName
+
 
             val preferenceName = when {
                 ann.defaultSharedPreferences ->
@@ -34,7 +40,7 @@ class ClassBuilderInitializer(environments: Set<Element>) {
                     """context?.getSharedPreferences("$it", Context.MODE_PRIVATE)!!"""
             }
 
-            """        $packageName.$className$GENERATED_CLASS_TAIL_FIX.preferences = $preferenceName"""
+            """        $packageName.$className.preferences = $preferenceName"""
         }
         //Log.w(preferences)
     }
