@@ -20,6 +20,32 @@ dependencies {
             implementation project(':pref_annotation')
 }
 ```
+#### Your code
+```javascript
+@Pref(defaultSharedPreferences = true)
+data class PPSharedPreferences(
+        //@formatter:off
+        val boolean1                      : Boolean,
+        val string2                       : String,
+        val int3                          : Int,
+        val androidId                     : String,
+        val appUuid                       : String
+        ...
+        //@formatter:on
+) {
+    // your init value optinal
+    companion object {
+        fun create(context: Context) {
+            val pref = PreferenceManager.getDefaultSharedPreferences(context)
+            pref.registerOnSharedPreferenceChangeListener { _, key -> Log.w(key, pref.all[key].toString().replace("\n", "_")) }
+            val androidId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+            pref.edit(true) { putString("androidId", androidId) }
+            pref.edit(true) { putString("appUuid", UUID(androidId.hashCode().toLong(), Build.MODEL.hashCode().toLong()).toString()) }
+        }
+    }
+}
+
+```
 
 ## License 
  ```code
