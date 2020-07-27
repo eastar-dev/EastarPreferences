@@ -82,7 +82,7 @@ public class AnnotationGenerator : AbstractProcessor() {
         file.writeText(fileContent)
     }
 
-    @UseExperimental(ExperimentalStdlibApi::class)
+    @OptIn(ExperimentalStdlibApi::class)
     private fun generatePrefClass(roundEnvironment: Element) {
         val file = File("$kaptKotlinGeneratedDir/${roundEnvironment.enclosingElement.toString().replace('.', '/')}", "${roundEnvironment.simpleName.removeSuffix(CLASS_TAIL)}.kt")
         file.parentFile.mkdirs()

@@ -9,7 +9,7 @@ object Log {
     //fun o(mag: CharSequence) = processingEnvironment.messager.printMessage(Diagnostic.Kind.OTHER, mag)
     //fun n(mag: CharSequence) = processingEnvironment.messager.printMessage(Diagnostic.Kind.NOTE, mag)
     //fun m(mag: CharSequence) = processingEnvironment.messager.printMessage(Diagnostic.Kind.MANDATORY_WARNING, mag)
-    fun w(mag: CharSequence) = processingEnvironment.messager.printMessage(Diagnostic.Kind.WARNING, mag)
+    fun w(mag: CharSequence) = processingEnvironment.messager.printMessage(Diagnostic.Kind.WARNING, "$mag\r")
     //fun e(mag: CharSequence) = processingEnvironment.messager.printMessage(Diagnostic.Kind.ERROR, mag)
 
     fun environmentTree(environment: Element, depth: Int = 0) {

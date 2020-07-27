@@ -15,32 +15,11 @@
  */
 package dev.eastar.kapt.sharedpreferences.demo
 
-import android.content.SharedPreferences
 import dev.eastar.pref.annotation.Pref
 
 @Pref
-interface TestSampleSharedPreferences {
-    val TEST_EMPTY_BOOLEAN: Boolean
-    val TEST_EMPTY_INT: Int
-    val TEST_EMPTY_FLOAT: Float
-    val TEST_EMPTY_LONG: Long
-    val TEST_EMPTY_STRING: String
-    val TEST_EMPTY_SET: Set<String>
-
-    val TEST_BOOLEAN: Boolean
-    val TEST_INT: Int
-    val TEST_FLOAT: Float
-    val TEST_LONG: Long
-    val TEST_STRING: String
-    val TEST_SET: Set<String>
-}
-
-@Pref
-interface TestSample2 {
-    val TEST_BOOLEAN: Boolean
-    val TEST_INT: Int
-    val TEST_FLOAT: Float
-    val TEST_LONG: Long
-    val TEST_STRING: String
-    val TEST_SET: Set<String>
+class TestSampleSharedPreferences {
+    val TEST_BOOLEAN: Boolean = true
+    val TEST_INT: Int = 100
+    val TEST_STRING: String = "hello"
 }
