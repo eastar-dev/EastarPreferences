@@ -1,2 +1,65 @@
-# EastarSharedPreferencesLoveInEnum
-Android SharedPreferences more smart use with enum class
+[![Release](https://jitpack.io/v/eastar-dev/EastarPreferences.svg)](https://jitpack.io/#eastar-dev/EastarPreferences)
+
+## How...
+
+### Gradle with jitpack
+
+#### Add it in your root build.gradle at the end of repositories:
+```javascript
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+#### Add the dependency
+```javascript
+dependencies {
+            kapt project(':pref_annotation_generator')
+            implementation project(':pref_annotation')
+}
+```
+#### Your code
+```javascript
+@Pref(defaultSharedPreferences = true)
+data class PPSharedPreferences(
+        //@formatter:off
+        val boolean1                      : Boolean,
+        val string2                       : String,
+        val int3                          : Int,
+        val androidId                     : String,
+        val appUuid                       : String
+        ...
+        //@formatter:on
+) {
+    // your init value optinal
+    companion object {
+        fun create(context: Context) {
+            val pref = PreferenceManager.getDefaultSharedPreferences(context)
+            pref.registerOnSharedPreferenceChangeListener { _, key -> Log.w(key, pref.all[key].toString().replace("\n", "_")) }
+            val androidId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+            pref.edit(true) { putString("androidId", androidId) }
+            pref.edit(true) { putString("appUuid", UUID(androidId.hashCode().toLong(), Build.MODEL.hashCode().toLong()).toString()) }
+        }
+    }
+}
+
+```
+
+## License 
+ ```code
+Copyright 2017 eastar Jeong
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
