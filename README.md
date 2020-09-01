@@ -47,6 +47,22 @@ data class PPSharedPreferences(
 
 ```
 
+## How used
+if
+
+```javascript
+data class xxxSharedPreferences{
+        val string2 : String,
+}
+```
+
+```javascript
+	xxx.string2 = "string" //set
+	val text = xxx.string2 //get
+	xxx.getString2("str")  //get with default value
+```
+
+
 ## License 
  ```code
 Copyright 2017 eastar Jeong
