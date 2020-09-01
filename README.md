@@ -16,8 +16,8 @@ allprojects {
 #### Add the dependency
 ```javascript
 dependencies {
-            kapt project(':pref_annotation_generator')
-            implementation project(':pref_annotation')
+    kapt 'com.github.eastar-dev.EastarPreferences:pref_annotation_generator:1.0.7'
+    implementation 'com.github.eastar-dev.EastarPreferences:pref_annotation:1.0.7'
 }
 ```
 #### Your code
