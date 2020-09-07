@@ -60,7 +60,7 @@ class ClassBuilderPreferences(element: Element) {
     private val contentTemplate = """
 package ${element.enclosingElement}
 import android.content.SharedPreferences
-
+/** @see ${element.simpleName} */
 object ${element.simpleName.removeSuffix(AnnotationConst.CLASS_TAIL)} {
     lateinit var preferences: SharedPreferences
 ${keys.mapNotNull { funcTemplate[it.first]?.format(it.second.camel, it.second, it.second, it.second.camel.capitalize(Locale.ENGLISH), it.second) }
