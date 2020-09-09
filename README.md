@@ -65,7 +65,7 @@ data class xxxSharedPreferences{
 
 ## License 
  ```code
-Copyright 2017 eastar Jeong
+Copyright 2019 eastar Jeong
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
