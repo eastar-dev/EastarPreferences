@@ -22,7 +22,11 @@ import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.KAPT_KOTLI
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.PACKAGE_NAME
 import dev.eastar.pref.annotation.util.Log
 import java.io.File
-import javax.annotation.processing.*
+import javax.annotation.processing.AbstractProcessor
+import javax.annotation.processing.ProcessingEnvironment
+import javax.annotation.processing.RoundEnvironment
+import javax.annotation.processing.SupportedOptions
+import javax.annotation.processing.SupportedSourceVersion
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
@@ -51,26 +55,26 @@ public class AnnotationGenerator : AbstractProcessor() {
         set?.firstOrNull() ?: return true
         //Log.w("0===========================================================")
         roundEnvironment
-                ?.getElementsAnnotatedWith(Pref::class.java)
-                ?.filterNot { it.simpleName.endsWith(CLASS_TAIL) }
-                ?.forEach {
-                    Log.w("${it.simpleName} !!@Pref annotation must suffix $CLASS_TAIL")
-                }
+            ?.getElementsAnnotatedWith(Pref::class.java)
+            ?.filterNot { it.simpleName.endsWith(CLASS_TAIL) }
+            ?.forEach {
+                Log.w("${it.simpleName} !!@Pref annotation must suffix $CLASS_TAIL")
+            }
 
         roundEnvironment
-                ?.getElementsAnnotatedWith(Pref::class.java)
-                ?.filter { it.simpleName.endsWith(CLASS_TAIL) }
-                ?.forEach {
-                    generatePrefClass(it)
-                }
+            ?.getElementsAnnotatedWith(Pref::class.java)
+            ?.filter { it.simpleName.endsWith(CLASS_TAIL) }
+            ?.forEach {
+                generatePrefClass(it)
+            }
         //Log.w("1===========================================================")
         roundEnvironment
-                ?.getElementsAnnotatedWith(Pref::class.java)
-                ?.filter { it.simpleName.endsWith(CLASS_TAIL) }
-                ?.toSet()
-                ?.let {
-                    generateInitializerClass(it)
-                }
+            ?.getElementsAnnotatedWith(Pref::class.java)
+            ?.filter { it.simpleName.endsWith(CLASS_TAIL) }
+            ?.toSet()
+            ?.let {
+                generateInitializerClass(it)
+            }
         //Log.w("2===========================================================")
         return true
     }

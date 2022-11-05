@@ -19,3 +19,4 @@ package dev.eastar.pref.annotation
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
 annotation class Pref(val value: String = "", val defaultSharedPreferences: Boolean = false)
+
