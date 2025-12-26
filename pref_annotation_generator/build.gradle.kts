@@ -1,0 +1,9 @@
+plugins {
+    kotlin("jvm")
+    id("kotlin-kapt")
+}
+
+dependencies {
+    compileOnly(project(":pref_annotation_internal"))
+    implementation("com.squareup:kotlinpoet:2.2.0")
+}
