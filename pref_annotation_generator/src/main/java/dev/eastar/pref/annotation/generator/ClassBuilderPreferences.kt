@@ -120,11 +120,11 @@ ${keys.mapNotNull { funcTemplate[it.first]?.format(it.second.camel, it.second, i
         get() =
             when {
                 contains('_') ->
-                    split('_').joinToString("") { it.toLowerCase(Locale.ENGLISH).capitalize(Locale.ENGLISH) }.decapitalize(Locale.ENGLISH)
+                    split('_').joinToString("") { it.lowercase(Locale.ENGLISH).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() } }.replaceFirstChar { it.lowercase(Locale.ENGLISH) }
                 filterNot { it.isDigit() || it.isUpperCase() }.count() <= 0 ->
-                    toLowerCase(Locale.ENGLISH)
+                    lowercase(Locale.ENGLISH)
                 else ->
-                    decapitalize(Locale.ENGLISH)
+                    replaceFirstChar { it.lowercase(Locale.ENGLISH) }
             }
 }
 

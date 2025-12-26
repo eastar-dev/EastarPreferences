@@ -1,7 +1,8 @@
-apply plugin: 'kotlin'
-apply plugin: 'kotlin-kapt'
-//apply plugin: 'com.github.dcendents.android-maven'//jitpack out
-group = 'com.github.eastar-dev'//jitpack out
+plugins {
+    id 'kotlin'
+    id 'kotlin-kapt'
+}
 dependencies {
     compileOnly project(':pref_annotation_internal')
+    implementation "com.squareup:kotlinpoet:2.2.0"
 }
