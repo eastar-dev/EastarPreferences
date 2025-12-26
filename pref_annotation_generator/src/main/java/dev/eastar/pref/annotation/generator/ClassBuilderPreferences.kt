@@ -41,8 +41,8 @@ class ClassBuilderPreferences(element: Element) {
 
         if (keys.isEmpty()) {
             val typeMap = element.enclosedElements
-                    .filter { it.simpleName.startsWith("get") }
-                    .map { it.simpleName.toString() to it.asType().toString() }.toMap()
+                .filter { it.simpleName.startsWith("get") }
+                .associate { it.simpleName.toString() to it.asType().toString() }
 
             keys = element.getAnnotation(Metadata::class.java).data2
                     .filterNot { it.isBlank() }
@@ -51,7 +51,7 @@ class ClassBuilderPreferences(element: Element) {
                     .filterNot { it.startsWith("set") }
                     .drop(1)
                     .dropLast(1)
-                    .map { (typeMap["get${it.capitalize(Locale.ENGLISH)}"]?.substring(2) ?: "") to it }
+                    .map { (typeMap["get${it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() }}"]?.substring(2) ?: "") to it }
         }
 
         keys.forEach { Log.w(it.toString()) }
@@ -63,7 +63,7 @@ import android.content.SharedPreferences
 /** @see ${element.simpleName} */
 object ${element.simpleName.removeSuffix(AnnotationConst.CLASS_TAIL)} {
     lateinit var preferences: SharedPreferences
-${keys.mapNotNull { funcTemplate[it.first]?.format(it.second.camel, it.second, it.second, it.second.camel.capitalize(Locale.ENGLISH), it.second) }
+${keys.mapNotNull { funcTemplate[it.first]?.format(it.second.camel, it.second, it.second, it.second.camel.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() }, it.second) }
             .joinToString("\n")}
 }
 """

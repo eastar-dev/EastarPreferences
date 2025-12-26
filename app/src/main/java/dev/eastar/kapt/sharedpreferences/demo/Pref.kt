@@ -36,11 +36,38 @@ interface TestSampleSharedPreferences {
 }
 
 @Pref
-interface TestSample2 {
-    val TEST_BOOLEAN: Boolean
-    val TEST_INT: Int
-    val TEST_FLOAT: Float
-    val TEST_LONG: Long
-    val TEST_STRING: String
-    val TEST_SET: Set<String>
+interface TestSample2SharedPreferences {
+    var testBoolean: Boolean
+    var testInt: Int
+    var testFloat: Float
+    var testLong: Long
+    var testString: String
+    var testSet: Set<String>
 }
+
+@Pref
+data class TestSample3SharedPreferences (
+    var testString: String? = "test_default"
+)
+
+
+//object TestSample2 : TestSample2SharedPreferences{
+//    override var testBoolean: Boolean
+//        get() = TODO("Not yet implemented")
+//        set(value) {}
+//    override var testInt: Int
+//        get() = TODO("Not yet implemented")
+//        set(value) {}
+//    override var testFloat: Float
+//        get() = TODO("Not yet implemented")
+//        set(value) {}
+//    override var testLong: Long
+//        get() = TODO("Not yet implemented")
+//        set(value) {}
+//    override var testString: String
+//        get() = TODO("Not yet implemented")
+//        set(value) {}
+//    override var testSet: Set<String>
+//        get() = TODO("Not yet implemented")
+//        set(value) {}
+//}

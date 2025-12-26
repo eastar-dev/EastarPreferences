@@ -1,5 +1,11 @@
 package dev.eastar.pref.annotation.generator
 
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.TypeSpec
 import dev.eastar.pref.annotation.Pref
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.CLASS_TAIL
 import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.GENERATED_INITIALIZER_CLASS
@@ -7,67 +13,115 @@ import dev.eastar.pref.annotation.generator.AnnotationConst.Companion.PACKAGE_NA
 import dev.eastar.pref.annotation.util.Log
 import javax.lang.model.element.Element
 
-/**
- * Custom Kotlin Class Builder which returns file content string
- * This is for learning purpose only.
- * Use KotlinPoet for production app
- * KotlinPoet can be found at https://github.com/square/kotlinpoet
- */
 class ClassBuilderInitializer(environments: Set<Element>) {
-    private var preferences: String
+
 
     init {
         Log.w("Generate Initializer Class : [$GENERATED_INITIALIZER_CLASS]")
-        preferences = environments.joinToString("\n") {
-            //if(!it.simpleName.endsWith(CLASS_TAIL))
-            //    return@joinToString ""
 
-            val className = it.simpleName.removeSuffix(CLASS_TAIL)
+        // Build onCreate() method with preference initialization code
+        val onCreateMethod: FunSpec = FunSpec.builder("onCreate")
+            .addModifiers(KModifier.OVERRIDE)
+            .returns(Boolean::class)
+            .apply {
+                environments.forEach { element ->
+                    val className = element.simpleName.removeSuffix(CLASS_TAIL)
+                    val ann = element.getAnnotation(Pref::class.java)
 
-            val ann = it.getAnnotation(Pref::class.java)
+                    var packageName = element.enclosingElement.toString()
+                    if (packageName == "unnamed package") {
+                        packageName = "unnamed"
+                    }
 
-            var packageName = it.enclosingElement.toString()
-            if (packageName == "unnamed package")
-                packageName = "unnamed"
+                    val preferenceName = when {
+                        ann.defaultSharedPreferences ->
+                            "androidx.preference.PreferenceManager.getDefaultSharedPreferences(context!!)"
 
+                        ann.value.isNotBlank() ->
+                            """context?.getSharedPreferences("${ann.value}", android.content.Context.MODE_PRIVATE)!!"""
 
-            val preferenceName = when {
-                ann.defaultSharedPreferences ->
-                    """androidx.preference.PreferenceManager.getDefaultSharedPreferences(context!!)"""
-                ann.value.isNotBlank() ->
-                    """context?.getSharedPreferences("${ann.value}", Context.MODE_PRIVATE)!!"""
-                else ->
-                    """context?.getSharedPreferences("$it", Context.MODE_PRIVATE)!!"""
+                        else ->
+                            """context?.getSharedPreferences("$element", android.content.Context.MODE_PRIVATE)!!"""
+                    }
+
+                    addStatement("%L.%L.preferences = %L", packageName, className, preferenceName)
+                }
             }
+            .addStatement("return true")
+            .build()
 
-            """        $packageName.$className.preferences = $preferenceName"""
-        }
-        //Log.w(preferences)
+
     }
 
-    private val contentTemplate = """
-package $PACKAGE_NAME
-
-import android.content.ContentProvider
-import android.content.ContentValues
-import android.content.Context
-import android.database.Cursor
-import android.net.Uri
-import androidx.preference.PreferenceManager
-
-class $GENERATED_INITIALIZER_CLASS : ContentProvider() {
-    override fun onCreate(): Boolean {
-$preferences
-        return true
-    }
-
-    override fun getType(uri: Uri): String? = null
-    override fun insert(uri: Uri, values: ContentValues?): Uri? = null
-    override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?): Cursor? = null
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int = 0
-    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = 0
 }
-"""
 
-    fun getContent() = contentTemplate
+
+fun getContent() = fileSpec.toString()
+
+
+// Build the file
+private val fileSpec: FileSpec = FileSpec.builder(PACKAGE_NAME, GENERATED_INITIALIZER_CLASS)
+    .addType(
+        generateContentProviderClass {
+            onCreateMethod
+        }
+    )
+    .build()
+
+fun generateContentProviderClass(onCreateMethodBuilder: () -> FunSpec): TypeSpec {
+    // Build the ContentProvider class
+    return TypeSpec.classBuilder(GENERATED_INITIALIZER_CLASS)
+        .superclass(ClassName("android.content", "ContentProvider"))
+        .addFunction(onCreateMethodBuilder())
+        .addFunction(
+            FunSpec.builder("getType")
+                .addModifiers(KModifier.OVERRIDE)
+                .addParameter("uri", ClassName("android.net", "Uri"))
+                .returns(ClassName("kotlin", "String").copy(nullable = true))
+                .addStatement("return null")
+                .build()
+        )
+        .addFunction(
+            FunSpec.builder("insert")
+                .addModifiers(KModifier.OVERRIDE)
+                .addParameter("uri", ClassName("android.net", "Uri"))
+                .addParameter("values", ClassName("android.content", "ContentValues").copy(nullable = true))
+                .returns(ClassName("android.net", "Uri").copy(nullable = true))
+                .addStatement("return null")
+                .build()
+        )
+        .addFunction(
+            FunSpec.builder("query")
+                .addModifiers(KModifier.OVERRIDE)
+                .addParameter("uri", ClassName("android.net", "Uri"))
+                .addParameter("projection", ClassName("kotlin", "Array").parameterizedBy(ClassName("kotlin", "String")).copy(nullable = true))
+                .addParameter("selection", ClassName("kotlin", "String").copy(nullable = true))
+                .addParameter("selectionArgs", ClassName("kotlin", "Array").parameterizedBy(ClassName("kotlin", "String")).copy(nullable = true))
+                .addParameter("sortOrder", ClassName("kotlin", "String").copy(nullable = true))
+                .returns(ClassName("android.database", "Cursor").copy(nullable = true))
+                .addStatement("return null")
+                .build()
+        )
+        .addFunction(
+            FunSpec.builder("update")
+                .addModifiers(KModifier.OVERRIDE)
+                .addParameter("uri", ClassName("android.net", "Uri"))
+                .addParameter("values", ClassName("android.content", "ContentValues").copy(nullable = true))
+                .addParameter("selection", ClassName("kotlin", "String").copy(nullable = true))
+                .addParameter("selectionArgs", ClassName("kotlin", "Array").parameterizedBy(ClassName("kotlin", "String")).copy(nullable = true))
+                .returns(ClassName("kotlin", "Int"))
+                .addStatement("return 0")
+                .build()
+        )
+        .addFunction(
+            FunSpec.builder("delete")
+                .addModifiers(KModifier.OVERRIDE)
+                .addParameter("uri", ClassName("android.net", "Uri"))
+                .addParameter("selection", ClassName("kotlin", "String").copy(nullable = true))
+                .addParameter("selectionArgs", ClassName("kotlin", "Array").parameterizedBy(ClassName("kotlin", "String")).copy(nullable = true))
+                .returns(ClassName("kotlin", "Int"))
+                .addStatement("return 0")
+                .build()
+        )
+        .build()
 }

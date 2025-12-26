@@ -23,6 +23,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         TestSample.preferences
+        TestSample2.preferences
+        TestSample3.testString
+        TestSample3.preferences
 
     }
 
